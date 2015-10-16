@@ -20,6 +20,9 @@ public:
     void changeMapRods(int numOfRod, QVector<float> set);
     void clearMapRods();
 
+    void changeMapLoads(QVector<float> set);
+    void clearMapLoads();
+
 private:
     QTimer* timer;
 

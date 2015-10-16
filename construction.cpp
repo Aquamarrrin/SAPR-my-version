@@ -19,7 +19,7 @@ void Construction::paintConstruction(QPainter &p)
 {
     if(rods.size()>0)
     {
-        float koeffW = width()/(1.2*findUserWidth(rods));
+        float koeffW = width()/(1.08*findUserWidth(rods));
         float koeffH=height()/(1.2*findMaxHeight(rods));
 
         QRect borders(0, 0, width()-1, height()-1);
@@ -42,7 +42,7 @@ void Construction::paintConstruction(QPainter &p)
         {
             float hRod=rods[k].height*koeffH;
             float wRod=(rods[k].len)*koeffW;
-            qDebug()<<k<<" : "<<width()<<" : "<<height()<<" : "<<hRod<<" : "<<wRod;
+            //qDebug()<<k<<" : "<<width()<<" : "<<height()<<" : "<<hRod<<" : "<<wRod;
             QString str;
             str.setNum(k+1);
             p.drawRect(X, height()/2 - hRod/2, wRod,  hRod);
@@ -76,15 +76,27 @@ void Construction::changeMapRods(int numOfRod, QVector<float> set)
     update();
 }
 
-
-void Construction::clearMapRods()
+void Construction::changeMapLoads(QVector<float> set)
 {
-    qDebug()<<rods.size();
-    rods.clear();
-    qDebug()<<rods.size();
+    qDebug()<<set;
+    Load load(set[0],set[1],set[2],set[3],set[4]);
+    loads.push_back(load);
+    update();
 }
 
 
+void Construction::clearMapRods()
+{
+    rods.clear();
+}
+
+void Construction::clearMapLoads()
+{
+    loads.clear();
+}
+
+
+//Находим наибольшую высоту среди стержней
 float Construction::findMaxHeight(QVector<Rod> set)
 {
     float max=0;
@@ -96,6 +108,7 @@ float Construction::findMaxHeight(QVector<Rod> set)
     return max;
 }
 
+//Суммируем все длины стержней, чтобы получить общую пользовательскую ширину
 float Construction::findUserWidth(QVector<Rod> set)
 {
     float wid=0;

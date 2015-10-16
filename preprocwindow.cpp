@@ -9,7 +9,7 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     layoutH = new QHBoxLayout();
 
     btnDraw = new QPushButton("Draw");
-    QObject::connect(btnDraw,SIGNAL(clicked()),this,SLOT(changeNodesRodesAndSettings()));
+    QObject::connect(btnDraw,SIGNAL(clicked()),this,SLOT(changeRodes()));
 
     //Поля для ввода количества узлов, стержней и нагрузок
     numNodes = new QSpinBox();
@@ -20,27 +20,6 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     QObject::connect(numLoads,SIGNAL(valueChanged(int)),this,SLOT(createTableLoad(int)));
 
     //Таблицы:
-//    //Таблица узлов:
-//    tableNode = new QTableWidget(this);
-//    tableNode->setMaximumWidth(190);
-//    tableNode->setColumnCount(1);
-//    tableNode->setRowCount(2);
-//    QTableWidgetItem* itemNodeHor = new QTableWidgetItem("координата X узла");
-//    tableNode->setHorizontalHeaderItem(0,itemNodeHor);
-//    (tableNode->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
-//    (tableNode->horizontalHeader())->setMinimumSectionSize(50);
-
-//    //Таблица стержней:
-//    tableRod = new QTableWidget(this);
-//    tableRod->setMaximumWidth(210);
-//    tableRod->setColumnCount(2);
-//    tableRod->setRowCount(1);
-//    QTableWidgetItem* itemRodHor1 = new QTableWidgetItem("N 1го узла");
-//    tableRod->setHorizontalHeaderItem(0,itemRodHor1);
-//    QTableWidgetItem* itemRodHor2 = new QTableWidgetItem("N 2го узла");
-//    tableRod->setHorizontalHeaderItem(1,itemRodHor2);
-//    (tableRod->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
-//    (tableRod->horizontalHeader())->setMinimumSectionSize(50);
 
     //Таблица нагрузок:
     tableLoad = new QTableWidget(this);
@@ -79,7 +58,7 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
 
     //Отрисовка конструкции:
     constr = new Construction();
-    constr->setFixedHeight(200);
+    constr->setFixedHeight(300);
 
     //Добавляем все элементы на лэйаут
     layoutV->addWidget(numNodes);
@@ -106,24 +85,8 @@ void PreProcWindow::createTableLoad(int nLoads)
     tableLoad->setRowCount(nLoads);
 }
 
-void PreProcWindow::changeNodesRodesAndSettings()
-{/*
-    //Меняем или задаем узлы
-    constr->clearMapNodes();
-    for(int row=0;row<tableNode->rowCount();row++)
-        if(isFilled(row, tableNode))
-            constr->changeMapNodes(row+1, tableNode->item(row,0)->text().toFloat());
-    //Меняем или задаем стержни
-    constr->clearMapRods();
-    for(int row=0;row<tableRod->rowCount();row++)
-        if(isFilled(row, tableRod))
-        {
-            QPoint point;
-            point.setX(tableRod->item(row,0)->text().toInt());
-            point.setY(tableRod->item(row,1)->text().toInt());
-            constr->changeMapRods(row+1, point);
-        }*/
-
+void PreProcWindow::changeRodes()
+{
     //Меняем или задаем параметры стержней
     constr->clearMapRods();
     for(int row=0;row<tableRodSettings->rowCount();row++)
@@ -133,6 +96,31 @@ void PreProcWindow::changeNodesRodesAndSettings()
             for(int i=0;i<tableRodSettings->columnCount();i++)
                 vec.push_back(tableRodSettings->item(row,i)->text().toInt());
             constr->changeMapRods(row+1, vec);
+        }
+
+    //Меняем или задаем параметры нагрузок
+    constr->clearMapLoads();
+    for(int row=0;row<tableLoad->rowCount();row++)
+        if(isFilled(row, tableLoad))
+        {
+            QVector<float> vec;
+            for(int i=0;i<tableLoad->columnCount();i++)
+                vec.push_back(tableLoad->item(row,i)->text().toInt());
+            constr->changeMapLoads(vec);
+        }
+}
+
+void PreProcWindow::changeLoads()
+{
+    //Меняем или задаем параметры нагрузок
+    constr->clearMapLoads();
+    for(int row=0;row<tableLoad->rowCount();row++)
+        if(isFilled(row, tableLoad))
+        {
+            QVector<float> vec;
+            for(int i=0;i<tableLoad->columnCount();i++)
+                vec.push_back(tableLoad->item(row,i)->text().toInt());
+            constr->changeMapLoads(vec);
         }
 }
 
