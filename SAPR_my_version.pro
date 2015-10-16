@@ -7,7 +7,8 @@ HEADERS += \
     mainwindow.h \
     chooseprocwindow.h \
     construction.h \
-    rod.h
+    rod.h \
+    load.h
 
 SOURCES += \
     preprocwindow.cpp \
@@ -15,4 +16,5 @@ SOURCES += \
     main.cpp \
     chooseprocwindow.cpp \
     construction.cpp \
-    rod.cpp
+    rod.cpp \
+    load.cpp
