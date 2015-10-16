@@ -8,6 +8,7 @@
 #include <QPoint>
 #include <QVector>
 #include "rod.h"
+#include "load.h"
 
 class Construction : public QWidget
 {
@@ -23,6 +24,7 @@ private:
     QTimer* timer;
 
     QVector<Rod> rods;
+    QVector<Load> loads;
 
     float findMaxHeight(QVector<Rod> set);
     float findUserWidth(QVector<Rod> set);

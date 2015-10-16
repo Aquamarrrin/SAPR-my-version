@@ -36,35 +36,6 @@ void Construction::paintConstruction(QPainter &p)
         for(double k = 3*height()/4; k >= height()/4; k -= 10)
             p.drawLine(10, k-10, 20, k);
 
-        //Отрисовка стержней:
-//        for(double k = 1; k <nodes.size() ; k++)
-//        {
-//            QString str;
-//            QPoint point;
-//            point.setX(k);
-//            point.setY(k+1);
-
-//            float hRod=settings[rods.key(point)][0]*koeffH;
-
-//            str.setNum(k);
-//            if(k==1)
-//            {
-//                p.drawRect((nodes[k]-nodes[1])*koeff+20, height()/2 - hRod/2, (nodes[k+1]-nodes[1])*koeff-((nodes[k]-nodes[1])*koeff+20),  hRod);
-//                p.drawText((nodes[k]-nodes[1])*koeff+20, height()/2-20 - hRod/2,str);
-//            }
-//            else
-//                if(k==nodes.size()-1)
-//                {
-//                    p.drawRect((nodes[k]-nodes[1])*koeff, height()/2 - hRod/2, (nodes[k+1]-nodes[1])*koeff-20-((nodes[k]-nodes[1])*koeff), hRod);
-//                    p.drawText((nodes[k]-nodes[1])*koeff, height()/2-20 - hRod/2,str);
-//                }
-//                else
-//                {
-//                    p.drawText((nodes[k]-nodes[1])*koeff, height()/2-20 - hRod/2,str);
-//                    p.drawRect((nodes[k]-nodes[1])*koeff, height()/2-hRod/2, (nodes[k+1]-nodes[1])*koeff-((nodes[k]-nodes[1])*koeff), hRod);
-//                }
-//        }
-
         float X=20;
         //Отрисовка стержней:
         for(double k = 0; k <rods.size() ; k++)
@@ -78,7 +49,6 @@ void Construction::paintConstruction(QPainter &p)
             p.drawText(X, height()/2-20 - hRod/2,str);
             X+=wRod;
         }
-
 
         //Отрисовка правой заделки:
         p.drawText(X, height()/4-20,(new QString())->QString::setNum(rods.size()));
