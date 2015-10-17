@@ -9,9 +9,10 @@ Rod::Rod()
     A=0;
     B=0;
     E=0;
+    coord=-1;
 }
 
-Rod::Rod(int fn, int sn, float len, float height, float A, float B, float E)
+Rod::Rod(int fn, int sn, float len, float height, float A, float B, float E,float coord)
 {
     firstNod=fn;
     secondNod=sn;
@@ -20,4 +21,5 @@ Rod::Rod(int fn, int sn, float len, float height, float A, float B, float E)
     this->A=A;
     this->B=B;
     this->E=E;
+    this->coord=coord;
 }

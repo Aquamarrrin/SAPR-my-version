@@ -40,6 +40,9 @@ public slots:
 
 private slots:
     void paintConstruction(QPainter &p);
+    void paintRods(QPainter &p, float koeffH,float koeffW);
+    void paintLoads(QPainter &p);
+    void drawArrow(QPainter &p, float x1, float y1, float x2, float y2, float h);
 
 };
 

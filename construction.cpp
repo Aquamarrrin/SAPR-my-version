@@ -38,7 +38,7 @@ void Construction::paintConstruction(QPainter &p)
 
         float X=20;
         //Отрисовка стержней:
-        for(double k = 0; k <rods.size() ; k++)
+        for(int k = 0; k <rods.size() ; k++)
         {
             float hRod=rods[k].height*koeffH;
             float wRod=(rods[k].len)*koeffW;
@@ -47,6 +47,7 @@ void Construction::paintConstruction(QPainter &p)
             str.setNum(k+1);
             p.drawRect(X, height()/2 - hRod/2, wRod,  hRod);
             p.drawText(X, height()/2-20 - hRod/2,str);
+            rods[k].coord=X;
             X+=wRod;
         }
 
@@ -56,11 +57,46 @@ void Construction::paintConstruction(QPainter &p)
         for(double k = 3*height()/4; k >= height()/4; k -= 10)
             p.drawLine(X+10, k-10, X, k);
 
+        //Отрисовка нагрузок
+       //paintLoads(p);
+        drawArrow(p,20,height()/2,50,height()/2,20);
+
         p.drawRect(borders);
     }
 
 }
 
+void Construction::paintRods(QPainter &p, float koeffH, float koeffW)
+{
+
+}
+
+
+void Construction::paintLoads(QPainter &p)
+{
+    //Отрисовка сосредоточенной нагрузки
+    for(int k = 0; k <loads.size() ; k++)
+    {
+        if(loads[k].firstNode==loads[k].secNode && loads[k].wall==0)
+        {
+
+        }
+    }
+}
+
+void Construction::drawArrow(QPainter &p, float x1, float y1, float x2, float y2,float h)
+{
+    QPointF points[7] = {
+        QPointF(x1, y1+h/2),
+        QPointF(x1+(x2-x1)*2/3, y1+h/2),
+        QPointF(x1+(x2-x1)*2/3, y1+h),
+        QPointF(x2, y1),
+         QPointF(x1+(x2-x1)*2/3, y1-h),
+         QPointF(x1+(x2-x1)*2/3, y1-h/2),
+         QPointF(x1, y1-h/2),
+     };
+    p.drawPolygon(points, 7);
+}
 
 void Construction::changeMapRods(int numOfRod, QVector<float> set)
 {
