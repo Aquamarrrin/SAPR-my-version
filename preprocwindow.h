@@ -40,8 +40,7 @@ signals:
 public slots:
     void createTableRod(int nNodes);
     void createTableLoad(int nLoads);
-    void changeRodes();
-    void changeLoads();
+    void showConstruction();
 
 
 };

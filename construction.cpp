@@ -58,8 +58,7 @@ void Construction::paintConstruction(QPainter &p)
             p.drawLine(X+10, k-10, X, k);
 
         //Отрисовка нагрузок
-       //paintLoads(p);
-        drawArrow(p,20,height()/2,50,height()/2,20);
+        paintLoads(p,koeffH,koeffW);
 
         p.drawRect(borders);
     }
@@ -72,30 +71,92 @@ void Construction::paintRods(QPainter &p, float koeffH, float koeffW)
 }
 
 
-void Construction::paintLoads(QPainter &p)
+void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
 {
     //Отрисовка сосредоточенной нагрузки
     for(int k = 0; k <loads.size() ; k++)
     {
         if(loads[k].firstNode==loads[k].secNode && loads[k].wall==0)
         {
-
+            float X=rods[loads[k].firstNode-1].coord;
+            float hRod=rods[loads[k].firstNode-1].height*koeffH;
+            if(loads[k].F1>0)
+            {
+                drawArrow(p,X,height()/2,X+40,height()/2,10);
+            }
+            if(loads[k].F1<0)
+            {
+                drawArrow(p,X,height()/2,X-40,height()/2,10);
+            }
+            if(loads[k].F2<0)
+            {
+                drawArrow(p,X,height()/2-hRod/2-40,X,height()/2-hRod/2,10);
+            }
+            if(loads[k].F2>0)
+            {
+                drawArrow(p,X,height()/2+hRod/2+40,X,height()/2+hRod/2,10);
+            }
+        }
+        if(loads[k].firstNode!=loads[k].secNode && loads[k].wall==0)
+        {
+            float X=rods[loads[k].firstNode-1].coord;
+            float wRod=rods[loads[k].firstNode-1].len*koeffW;
+            float hRod=rods[loads[k].firstNode-1].height*koeffH;
+            if(loads[k].F1>0)
+            {
+                for(float i=X;i<X+wRod;i+=wRod/10)
+                    drawArrow(p,i,height()/2,i+wRod/10,height()/2,5);
+            }
+            if(loads[k].F1<0)
+            {
+                for(float i=X;i<X+wRod;i+=wRod/10)
+                    drawArrow(p,i+wRod/10,height()/2,i,height()/2,5);
+            }
+            if(loads[k].F2<0)
+            {
+                p.drawLine(X, height()/2-hRod/2-40, X+wRod, height()/2-hRod/2-40);
+                for(float i=X;i<X+wRod;i+=wRod/10)
+                    drawArrow(p,i,height()/2-hRod/2-40,i,height()/2-hRod/2,4);
+            }
+            if(loads[k].F2>0)
+            {
+                p.drawLine(X, height()/2+hRod/2+40, X+wRod, height()/2+hRod/2+40);
+                for(float i=X;i<X+wRod;i+=wRod/10)
+                    drawArrow(p,i,height()/2+hRod/2+40,i,height()/2+hRod/2,4);
+            }
         }
     }
 }
 
 void Construction::drawArrow(QPainter &p, float x1, float y1, float x2, float y2,float h)
 {
-    QPointF points[7] = {
-        QPointF(x1, y1+h/2),
-        QPointF(x1+(x2-x1)*2/3, y1+h/2),
-        QPointF(x1+(x2-x1)*2/3, y1+h),
-        QPointF(x2, y1),
-         QPointF(x1+(x2-x1)*2/3, y1-h),
-         QPointF(x1+(x2-x1)*2/3, y1-h/2),
-         QPointF(x1, y1-h/2),
-     };
-    p.drawPolygon(points, 7);
+    if(y2==y1)
+    {
+        QPointF points[7] = {
+            QPointF(x1, y1+h/2),
+            QPointF(x1+(x2-x1)*2/3, y1+h/2),
+            QPointF(x1+(x2-x1)*2/3, y1+h),
+            QPointF(x2, y1),
+             QPointF(x1+(x2-x1)*2/3, y1-h),
+             QPointF(x1+(x2-x1)*2/3, y1-h/2),
+             QPointF(x1, y1-h/2),
+         };
+        p.drawPolygon(points, 7);
+    }
+    else
+        if(x1==x2)
+        {
+            QPointF points[7] = {
+                QPointF(x1-h/2, y1),
+                QPointF(x1-h/2, y1+(y2-y1)*2/3),
+                QPointF(x1-h, y1+(y2-y1)*2/3),
+                QPointF(x1, y2),
+                 QPointF(x1+h, y1+(y2-y1)*2/3),
+                 QPointF(x1+h/2, y1+(y2-y1)*2/3),
+                 QPointF(x1+h/2, y1),
+             };
+            p.drawPolygon(points, 7);
+        }
 }
 
 void Construction::changeMapRods(int numOfRod, QVector<float> set)
