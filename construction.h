@@ -32,6 +32,8 @@ private:
     float findMaxHeight(QVector<Rod> set);
     float findUserWidth(QVector<Rod> set);
 
+    float heightMy;
+
 protected:
     void paintEvent(QPaintEvent *);
 signals:
@@ -40,9 +42,9 @@ public slots:
 
 private slots:
     void paintConstruction(QPainter &p);
-    void paintRods(QPainter &p, float koeffH,float koeffW);
     void paintLoads(QPainter &p, float koeffH, float koeffW);
     void drawArrow(QPainter &p, float x1, float y1, float x2, float y2, float h);
+    void drawWall(QPainter &p, float x);
 
 };
 
