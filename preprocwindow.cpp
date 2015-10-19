@@ -3,7 +3,7 @@
 PreProcWindow::PreProcWindow(QWidget *parent) :
     QWidget(parent)
 {
-    this->setMinimumSize(850,650);
+    this->setMinimumSize(900,650);
 
     layoutV = new QVBoxLayout();
     layoutH = new QHBoxLayout();
@@ -14,16 +14,19 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     QObject::connect(btnDraw,SIGNAL(clicked()),this,SLOT(showConstruction()));
 
     //Поля для ввода количества узлов, стержней и нагрузок
-    numNodes = new QSpinBox();
-    numNodes->setMinimum(1);
-    numNodes->setMinimumWidth(350);
+    numNodes = new QSlider();
     numNodes->setMaximumWidth(500);
-    QObject::connect(numNodes,SIGNAL(valueChanged(int)),this,SLOT(createTableRod(int)));
+    numNodes->setMinimum(1);
+    numNodes->setMaximum(50);
+    numNodes->setOrientation(Qt::Horizontal);
+    connect(numNodes,SIGNAL(valueChanged(int)),this,SLOT(createTableRod(int)));
 
-    numLoads = new QSpinBox();
+    numLoads = new QSlider();
     numLoads->setMaximumWidth(500);
-    numLoads->setMinimumWidth(350);
-    QObject::connect(numLoads,SIGNAL(valueChanged(int)),this,SLOT(createTableLoad(int)));
+    numLoads->setOrientation(Qt::Horizontal);
+    numLoads->setMinimum(0);
+    numLoads->setMaximum(50);
+    connect(numLoads,SIGNAL(valueChanged(int)),this,SLOT(createTableLoad(int)));
 
     //Таблицы:
 
@@ -71,13 +74,12 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     constr->setFixedHeight(400);
 
     //Добавляем все элементы на лэйаут
-    layoutV->addWidget(numNodes);
+
     layoutV->addWidget(numLoads);
-    layoutV->addWidget(btnDraw);
-    //layoutH->addWidget(tableNode);
-    //layoutH->addWidget(tableRod);
     layoutV->addWidget(tableLoad);
+    layoutV->addWidget(numNodes);
     layoutV->addWidget(tableRodSettings);
+    layoutV->addWidget(btnDraw);
 
     layoutH->addLayout(layoutV,1);
     layoutH->addWidget(constr,1);

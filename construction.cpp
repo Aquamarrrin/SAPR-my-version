@@ -20,23 +20,22 @@ void Construction::paintConstruction(QPainter &p)
     heightMy=height()/2;
     if(rods.size()>0)
     {
-        float koeffW = width()/(1.08*findUserWidth(rods));
-        float koeffH=heightMy/(1.3*findMaxHeight(rods));
+        float koeffW = width()/(1.07*findUserWidth(rods));
+        float koeffH=heightMy/(1.5*findMaxHeight(rods));
 
         QRect borders(0, 0, width()-1, height()-1);
         QColor gridColor = "#000";
-        //gridColor.setAlpha(10);
-        p.setPen(gridColor);
-    //    for(double k = 10; k <= width(); k += 10)
-    //        p.drawLine(k, 0, k, height());
-    //    for(double k = 10; k <= height(); k += 10)
-    //        p.drawLine(0, k, width(), k);
 
-//        //Отрисовка левой заделки:
-//        p.drawLine(20, 3*heightMy/4, 20, heightMy/4);
-//        for(double k = 3*heightMy/4; k >= heightMy/4; k -= 10)
-//            p.drawLine(10, k-10, 20, k);
-        //drawWall(p,20);
+        //Отрисовка сетки поля
+        gridColor.setAlpha(10);
+        p.setPen(gridColor);
+        for(double k = 20; k <= width(); k += 20)
+            p.drawLine(k, 0, k, height());
+        for(double k = 20; k <= height(); k += 20)
+            p.drawLine(0, k, width(), k);
+        gridColor.setAlpha(255);
+        p.setPen(gridColor);
+
 
         float X=20;
         //Отрисовка стержней:
@@ -44,21 +43,30 @@ void Construction::paintConstruction(QPainter &p)
         {
             float hRod=rods[k].height*koeffH;
             float wRod=(rods[k].len)*koeffW;
-            //qDebug()<<k<<" : "<<width()<<" : "<<height()<<" : "<<hRod<<" : "<<wRod;
             QString str;
+            QString str1;
+
+            //Отрисовка стержня
             str.setNum(k+1);
             p.drawRect(X, heightMy/2 - hRod/2, wRod,  hRod);
             p.drawText(X, 20,str);
+
+            //Отрисовка надписей над стержнем
+            str=str.setNum(rods[k].E);
+            str="E="+str;
+            str1=str1.setNum(rods[k].A);
+            str1="A="+str1;
+            str=str+","+str1;
+            str1=str1.setNum(rods[k].B);
+            str1="B="+str1;
+            str=str+","+str1;
+            p.drawText(X+wRod/8, heightMy/2 - hRod/2-5,str);
+
             rods[k].coord=X;
             X+=wRod;
         }
 
-        //Отрисовка правой заделки:
         p.drawText(X, 20,(new QString())->QString::setNum(rods.size()+1));
-//        p.drawLine(X, 3*heightMy/4, X, heightMy/4);
-//        for(double k = 3*heightMy/4; k >= heightMy/4; k -= 10)
-//            p.drawLine(X+10, k-10, X, k);
-        //drawWall(p,X);
 
         //Отрисовка нагрузок
         paintLoads(p,koeffH,koeffW);
@@ -81,8 +89,18 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
             float wRod=0;
             if(loads[k].firstNode-1<rods.size() || rods.size()<2)
             {
-                X=rods[loads[k].firstNode-1].coord;
-                hRod=rods[loads[k].firstNode-1].height*koeffH;
+                if(rods.size()<=1 && loads[k].firstNode>1)
+                {
+                    X=rods[0].coord;
+                    hRod=rods[0].height*koeffH;
+                    wRod=rods[0].len*koeffW;
+                }
+                else
+                {
+                    X=rods[loads[k].firstNode-1].coord;
+                    hRod=rods[loads[k].firstNode-1].height*koeffH;
+                    wRod=rods[loads[k].firstNode-1].len*koeffW;
+                }
             }
             else
             {
@@ -90,6 +108,8 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
                 hRod=rods[loads[k].firstNode-2].height*koeffH;
                 wRod=rods[loads[k].firstNode-2].len*koeffW;
             }
+
+            p.setBrush(Qt::SolidPattern);
             if(loads[k].F1>0)
                 drawArrow(p,X+wRod,heightMy/2,X+wRod+40,heightMy/2,10);
             if(loads[k].F1<0)
@@ -98,10 +118,12 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
                 drawArrow(p,X+wRod,heightMy/2-hRod/2-40,X+wRod,heightMy/2-hRod/2,10);
             if(loads[k].F2>0)
                 drawArrow(p,X+wRod,heightMy/2+hRod/2+40,X+wRod,heightMy/2+hRod/2,10);
+            p.setBrush(Qt::NoBrush);
+
             //Отрисовка заделки в узле
             if(loads[k].wall!=0)
             {
-                if(loads[k].firstNode>rods.size())
+                if(loads[k].firstNode>rods.size() || (rods.size()<=1 && loads[k].firstNode>1))
                     drawWall(p,X+wRod);
                 if(loads[k].firstNode<=rods.size())
                     drawWall(p,X);
@@ -139,6 +161,7 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
     }
 }
 
+//Отрисовка стрелок:
 void Construction::drawArrow(QPainter &p, float x1, float y1, float x2, float y2,float h)
 {
     if(y2==y1)
@@ -152,7 +175,7 @@ void Construction::drawArrow(QPainter &p, float x1, float y1, float x2, float y2
              QPointF(x1+(x2-x1)*2/3, y1-h/2),
              QPointF(x1, y1-h/2),
          };
-        p.drawPolygon(points, 7);
+        p.drawPolygon(points, 7,Qt::OddEvenFill);
     }
     else
         if(x1==x2)
@@ -166,27 +189,27 @@ void Construction::drawArrow(QPainter &p, float x1, float y1, float x2, float y2
                  QPointF(x1+h/2, y1+(y2-y1)*2/3),
                  QPointF(x1+h/2, y1),
              };
-            p.drawPolygon(points, 7);
+            p.drawPolygon(points, 7,Qt::OddEvenFill);
         }
 }
 
+//Отрисовка заделок:
 void Construction::drawWall(QPainter &p, float x)
 {
+    p.drawLine(x, 3*heightMy/4, x, heightMy/4);
     if(x==20)
     {
-        p.drawLine(x, 3*heightMy/4, x, heightMy/4);
         for(double k = 3*heightMy/4; k >= heightMy/4; k -= 10)
             p.drawLine(x-10, k-10, x, k);
     }
-    if(width()-x<=20)
+    else
+    if(width()-x<=40)
     {
-        p.drawLine(x, 3*heightMy/4, x, heightMy/4);
         for(double k = 3*heightMy/4; k >= heightMy/4; k -= 10)
             p.drawLine(x, k-10, x+10, k);
     }
-    if(width()-x>=20 && x>20)
+    else
     {
-        p.drawLine(x, 3*heightMy/4, x, heightMy/4);
         for(double k = 3*heightMy/4; k >= heightMy/4; k -= 10)
             p.drawLine(x-5, k-10, x+5, k);
     }
@@ -194,6 +217,7 @@ void Construction::drawWall(QPainter &p, float x)
 
 void Construction::changeMapRods(int numOfRod, QVector<float> set)
 {
+    //Заполняем вектор стержней:
     Rod rod;
     rod.firstNod=numOfRod;
     rod.secondNod=numOfRod+1;
@@ -208,6 +232,7 @@ void Construction::changeMapRods(int numOfRod, QVector<float> set)
 
 void Construction::changeMapLoads(QVector<float> set)
 {
+    //Заполняем вектор нагрузок:
     Load load(set[0],set[1],set[2],set[3],set[4]);
     loads.push_back(load);
     update();

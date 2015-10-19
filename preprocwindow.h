@@ -7,8 +7,8 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QLineEdit>
-#include <QSpinBox>
 #include <QHeaderView>
+#include <QSlider>
 #include "construction.h"
 
 class PreProcWindow : public QWidget
@@ -23,8 +23,8 @@ private:
 
     QPushButton* btnDraw;
 
-    QSpinBox* numNodes;
-    QSpinBox* numLoads;
+    QSlider* numNodes;
+    QSlider* numLoads;
 
     QTableWidget* tableNode;
     QTableWidget* tableRod;
