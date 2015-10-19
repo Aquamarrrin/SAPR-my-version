@@ -18,6 +18,8 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     numNodes->setMaximumWidth(500);
     numNodes->setMinimum(1);
     numNodes->setMaximum(50);
+    numNodes->setTickPosition(QSlider::TicksBelow);
+    numNodes->setTickInterval(2);
     numNodes->setOrientation(Qt::Horizontal);
     connect(numNodes,SIGNAL(valueChanged(int)),this,SLOT(createTableRod(int)));
 
@@ -26,6 +28,8 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     numLoads->setOrientation(Qt::Horizontal);
     numLoads->setMinimum(0);
     numLoads->setMaximum(50);
+    numLoads->setTickPosition(QSlider::TicksBelow);
+    numLoads->setTickInterval(2);
     connect(numLoads,SIGNAL(valueChanged(int)),this,SLOT(createTableLoad(int)));
 
     //Таблицы:
