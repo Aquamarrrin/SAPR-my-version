@@ -1,7 +1,9 @@
 #ifndef LOAD_H
 #define LOAD_H
 
-class Load
+#include <QDataStream>
+
+class Load //Класс сосредоточенной нагрузки на стержень
 {
 public:
     Load();

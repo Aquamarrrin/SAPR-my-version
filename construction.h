@@ -17,11 +17,11 @@ public:
     explicit Construction(QWidget *parent = 0);
     ~Construction();
 
-    void changeMapRods(int numOfRod, QVector<float> set);
-    void clearMapRods();
+    void changeMapRods(int numOfRod, QVector<float> set);  //Добавляем параметры стержней в вектор
+    void clearMapRods(); //Очищаем вектор стержней
 
-    void changeMapLoads(QVector<float> set);
-    void clearMapLoads();
+    void changeMapLoads(QVector<float> set);  //Добавляем параметры нагрузок в вектор
+    void clearMapLoads();  //Очищаем вектор нагрузок
 
 private:
     QTimer* timer;
@@ -29,8 +29,8 @@ private:
     QVector<Rod> rods;
     QVector<Load> loads;
 
-    float findMaxHeight(QVector<Rod> set);
-    float findUserWidth(QVector<Rod> set);
+    float findMaxHeight(QVector<Rod> set); //Находим максимальную высоту в векторе стержней
+    float findUserWidth(QVector<Rod> set); //Суммируем пользовательскую ширину для получения правильных коэффициентов
 
     float heightMy;
 
@@ -41,10 +41,10 @@ signals:
 public slots:
 
 private slots:
-    void paintConstruction(QPainter &p);
-    void paintLoads(QPainter &p, float koeffH, float koeffW);
-    void drawArrow(QPainter &p, float x1, float y1, float x2, float y2, float h);
-    void drawWall(QPainter &p, float x);
+    void paintConstruction(QPainter &p);  //Собственно отрисовка конструкции
+    void paintLoads(QPainter &p, float koeffH, float koeffW);  //Отрисовка нагрузок на стержни
+    void drawArrow(QPainter &p, float x1, float y1, float x2, float y2, float h); //Отрисовка стрелок
+    void drawWall(QPainter &p, float x); //Отрисовка заделок
 
 };
 

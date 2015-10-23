@@ -19,3 +19,25 @@ Rod::Rod(int fn, int sn, float len, float height, float E,float coord)
     this->E=E;
     this->coord=coord;
 }
+
+QDataStream & operator << ( QDataStream & stream, const Rod & rod )
+{
+    return stream
+            <<rod.firstNod
+            <<rod.secondNod
+            <<rod.len
+            <<rod.height
+            <<rod.E
+            <<rod.coord;
+}
+
+QDataStream & operator >> ( QDataStream & stream, Rod & rod )
+{
+    return stream
+            >>rod.firstNod
+            >>rod.secondNod
+            >>rod.len
+            >>rod.height
+            >>rod.E
+            >>rod.coord;
+}

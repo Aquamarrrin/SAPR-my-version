@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLayout>
 #include <QMenu>
+#include <QFileDialog>
 #include "preprocwindow.h"
 
 class MainWindow : public QWidget
@@ -19,7 +20,6 @@ private:
     QVBoxLayout* layoutV;
 
     QPushButton* btnStart;
-    QPushButton* btnSave;
     QPushButton* btnLoad;
     QPushButton* btnPreProc;
     QPushButton* btnProc;
@@ -32,6 +32,9 @@ public slots:
     void startMenu();
     void loadPreProc();
     void backToMainMenu();
+
+private slots:
+    void openFile();
 
 };
 

@@ -13,3 +13,19 @@ Load::Load(int firstNode,float F1,bool wall)
     this->F1=F1;
     this->wall=wall;
 }
+
+QDataStream & operator << ( QDataStream & stream, const Load & load )
+{
+    return stream
+            <<load.firstNode
+            <<load.F1
+            <<load.wall;
+}
+
+QDataStream & operator >> ( QDataStream & stream, Load & load )
+{
+    return stream
+            >>load.firstNode
+            >>load.F1
+            >>load.wall;
+}

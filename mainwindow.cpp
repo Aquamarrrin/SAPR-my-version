@@ -12,13 +12,10 @@ MainWindow::MainWindow(QWidget *parent) :
     layoutV->addWidget(btnStart);
     QObject::connect(btnStart,SIGNAL(clicked()),this,SLOT(startMenu()));
 
-    btnSave = new QPushButton("Сохранить");
-    btnSave->setFixedHeight(70);
-    layoutV->addWidget(btnSave);
-
     btnLoad = new QPushButton("Загрузить");
     btnLoad->setFixedHeight(70);
     layoutV->addWidget(btnLoad);
+    QObject::connect(btnLoad,SIGNAL(clicked()),this,SLOT(openFile()));
 
     this->setLayout(layoutV);
 }
@@ -57,13 +54,10 @@ void MainWindow::backToMainMenu()
     layoutV->addWidget(btnStart);
     QObject::connect(btnStart,SIGNAL(clicked()),this,SLOT(startMenu()));
 
-    btnSave = new QPushButton("Сохранить");
-    btnSave->setFixedHeight(70);
-    layoutV->addWidget(btnSave);
-
     btnLoad = new QPushButton("Загрузить");
     btnLoad->setFixedHeight(70);
     layoutV->addWidget(btnLoad);
+    QObject::connect(btnLoad,SIGNAL(clicked()),this,SLOT(openFile()));
 
     this->setLayout(layoutV);
 }
@@ -79,6 +73,23 @@ void MainWindow::showThisMenu()
 {
     this->show();
 }
+
+
+void MainWindow::openFile()
+{
+    QString fileName=QFileDialog::getOpenFileName(this,tr("OpenFile"),"",tr("Text Files (*.txt)"));
+    if (fileName !=""){
+        QFile file(fileName);
+        if (!file.open(QIODevice::ReadOnly)){
+            QMessageBox::critical(this,tr("Error"),tr("Could not open file"));
+            return;
+        }
+        QTextStream in(&file);
+        //textEdt->setText(in.readAll());
+        file.close();
+    }
+}
+
 
 void MainWindow::clean( )
 {

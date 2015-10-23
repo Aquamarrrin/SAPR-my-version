@@ -1,7 +1,9 @@
 #ifndef ROD_H
 #define ROD_H
 
-class Rod
+#include <QDataStream>
+
+class Rod //Класс стержня, содержащий его параметры
 {
 public:
     Rod();

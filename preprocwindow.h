@@ -20,6 +20,7 @@ class PreProcWindow : public QWidget
 {
     Q_OBJECT
 public:
+    //PreProcWindow(const QString filePath = "" ,QWidget *parent = 0);
     explicit PreProcWindow(QWidget *parent = 0);
 
 private:
@@ -31,16 +32,18 @@ private:
     QSlider* numNodes;
     QSlider* numLoads;
 
-    QTableWidget* tableNode;
-    QTableWidget* tableRod;
     QTableWidget* tableRodSettings;
     QTableWidget* tableLoad;
 
     Construction* constr;
 
+    QVector<QString> fileOfTablesText;
+
     bool isFilled(int row, QTableWidget *table);
     bool isNotEmpty(int row, QTableWidget *table);
     bool isExist(int row, int column, QTableWidget *table);
+
+    void parseFileOfTablesText();
 
 signals:
 
@@ -49,6 +52,10 @@ public slots:
     void createTableLoad(int nLoads);
     void showConstruction();
     void backToMenu();
+
+private slots:
+    void saveFile();
+    void openFile();
 
 
 };
