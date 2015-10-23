@@ -4,25 +4,34 @@
 #include <QWidget>
 #include <QPushButton>
 #include <QLayout>
-#include "chooseprocwindow.h"
+#include <QMenu>
+#include "preprocwindow.h"
 
 class MainWindow : public QWidget
 {
     Q_OBJECT
 public:
     MainWindow(QWidget *parent = 0);
+    void showThisMenu();
     ~MainWindow();
 
 private:
+    QVBoxLayout* layoutV;
+
     QPushButton* btnStart;
     QPushButton* btnSave;
     QPushButton* btnLoad;
+    QPushButton* btnPreProc;
+    QPushButton* btnProc;
+    QPushButton* btnPostProc;
 
-
+    void clean();
 signals:
 
 public slots:
     void startMenu();
+    void loadPreProc();
+    void backToMainMenu();
 
 };
 

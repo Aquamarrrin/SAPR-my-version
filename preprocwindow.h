@@ -9,6 +9,11 @@
 #include <QLineEdit>
 #include <QHeaderView>
 #include <QSlider>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QDebug>
+#include "mainwindow.h"
 #include "construction.h"
 
 class PreProcWindow : public QWidget
@@ -34,6 +39,8 @@ private:
     Construction* constr;
 
     bool isFilled(int row, QTableWidget *table);
+    bool isNotEmpty(int row, QTableWidget *table);
+    bool isExist(int row, int column, QTableWidget *table);
 
 signals:
 
@@ -41,6 +48,7 @@ public slots:
     void createTableRod(int nNodes);
     void createTableLoad(int nLoads);
     void showConstruction();
+    void backToMenu();
 
 
 };

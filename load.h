@@ -5,11 +5,9 @@ class Load
 {
 public:
     Load();
-    Load(int firstNode,int secNode, float F1,float F2,bool wall);
+    Load(int firstNode,float F1,bool wall);
     int firstNode;
-    int secNode;
     float F1;
-    float F2;
     bool wall;
 };
 

@@ -56,21 +56,19 @@ void Construction::paintConstruction(QPainter &p)
             p.drawLine(X, heightMy/2 + hRod/2,X,height());
             p.setPen(Qt::SolidLine);
 
-            //Отрисовка надписей над стержнем
+            //Отрисовка надписей под стержнем
             str=str.setNum(rods[k].E);
             str="E="+str;
-            str1=str1.setNum(rods[k].A);
+            p.drawText(X+5, heightMy/2 + hRod/2+30,str);
+            str1=str1.setNum(rods[k].height);
             str1="A="+str1;
-            str=str+","+str1;
-            str1=str1.setNum(rods[k].B);
-            str1="B="+str1;
-            str=str+","+str1;
-            p.drawText(X+wRod/8, heightMy/2 - hRod/2-5,str);
+            p.drawText(X+5, heightMy/2 + hRod/2+45,str1);
 
-            //Отрисовка надписей под стержнем
+
+            //Отрисовка надписей над стержнем
             str=str.setNum(rods[k].len);
             str="L="+str;
-            p.drawText(X+wRod/8, heightMy/2 + hRod/2+15,str);
+            p.drawText(X+wRod/3, heightMy/2 - hRod/2-10,str);
 
             rods[k].coord=X;
             X+=wRod;
@@ -95,7 +93,7 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
     for(int k = 0; k <loads.size() ; k++)
     {
         //Отрисовка сосредоточенной нагрузки
-        if(loads[k].firstNode==loads[k].secNode)
+        if(loads[k].firstNode>0 && loads[k].firstNode<=rods.size()+1)
         {
             float X=0;
             float hRod=0;
@@ -129,46 +127,26 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
             {
                 if(loads[k].F1>0)
                 {
-                    drawArrow(p,X,heightMy/2,X+40,heightMy/2,10);
+                    drawArrow(p,X,heightMy/2,X+20,heightMy/2,10);
                     p.drawText(X, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
                 }
                 if(loads[k].F1<0)
                 {
-                    drawArrow(p,X,heightMy/2,X-40,heightMy/2,10);
-                    p.drawText(X-40, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
-                }
-                if(loads[k].F2<0)
-                {
-                    drawArrow(p,X,heightMy/2-hRod/2-40,X,heightMy/2-hRod/2,10);
-                    p.drawText(X, heightMy/2 +15,"F="+str.setNum(loads[k].F2));
-                }
-                if(loads[k].F2>0)
-                {
-                    drawArrow(p,X,heightMy/2+hRod/2+40,X,heightMy/2+hRod/2,10);
-                    p.drawText(X, heightMy/2 +15,"F="+str.setNum(loads[k].F2));
+                    drawArrow(p,X,heightMy/2,X-20,heightMy/2,10);
+                    p.drawText(X-20, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
                 }
             }
             else
             {
                 if(loads[k].F1>0)
                 {
-                    drawArrow(p,X+wRod,heightMy/2,X+wRod+40,heightMy/2,10);
+                    drawArrow(p,X+wRod,heightMy/2,X+wRod+20,heightMy/2,10);
                     p.drawText(X+wRod, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
                 }
                 if(loads[k].F1<0)
                 {
-                    drawArrow(p,X+wRod,heightMy/2,X+wRod-40,heightMy/2,10);
-                    p.drawText(X+wRod-40, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
-                }
-                if(loads[k].F2<0)
-                {
-                    drawArrow(p,X+wRod,heightMy/2-hRod/2-40,X+wRod,heightMy/2-hRod/2,10);
-                    p.drawText(X+wRod, heightMy/2 +15,"F="+str.setNum(loads[k].F2));
-                }
-                if(loads[k].F2>0)
-                {
-                    drawArrow(p,X+wRod,heightMy/2+hRod/2+40,X+wRod,heightMy/2+hRod/2,10);
-                    p.drawText(X+wRod, heightMy/2 +15,"F="+str.setNum(loads[k].F2));
+                    drawArrow(p,X+wRod,heightMy/2,X+wRod-20,heightMy/2,10);
+                    p.drawText(X+wRod-20, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
                 }
             }
             p.setBrush(Qt::NoBrush);
@@ -182,36 +160,29 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
                     drawWall(p,X);
             }
         }
-        //Отрисовка распределенной нагрузки
-        if(loads[k].firstNode!=loads[k].secNode)
+
+    }
+    //Отрисовка распределенной нагрузки
+    for(int k=0;k<rods.size();k++)
+    {
+        if(rods[k].Fx!=0)
         {
             QString str;
-            float X=rods[loads[k].firstNode-1].coord;
-            float wRod=rods[loads[k].firstNode-1].len*koeffW;
-            float hRod=rods[loads[k].firstNode-1].height*koeffH;
-            if(loads[k].F1>0)
+            float X=rods[k].coord;
+            float wRod=rods[k].len*koeffW;
+            if(rods[k].Fx>0)
             {
-                for(float i=X;i<X+wRod;i+=wRod/10)
+                for(float i=X;i<X+wRod-wRod/10;i+=wRod/10)
                     drawArrow(p,i,heightMy/2,i+wRod/10,heightMy/2,5);
-                p.drawText(X+wRod/2, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
+                drawArrow(p,X+wRod-wRod/10,heightMy/2,X+wRod,heightMy/2,5);
+                p.drawText(X+wRod/3, heightMy/2 -15,"q="+str.setNum(rods[k].Fx));
             }
-            if(loads[k].F1<0)
+            if(rods[k].Fx<0)
             {
-                for(float i=X;i<X+wRod;i+=wRod/10)
+                for(float i=X;i<X+wRod-wRod/10;i+=wRod/10)
                     drawArrow(p,i+wRod/10,heightMy/2,i,heightMy/2,5);
-                p.drawText(X+wRod/2, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
-            }
-            if(loads[k].F2<0)
-            {
-                p.drawLine(X, heightMy/2-hRod/2-40, X+wRod, heightMy/2-hRod/2-40);
-                for(float i=X;i<X+wRod;i+=wRod/10)
-                    drawArrow(p,i,heightMy/2-hRod/2-40,i,heightMy/2-hRod/2,4);
-            }
-            if(loads[k].F2>0)
-            {
-                p.drawLine(X, heightMy/2+hRod/2+40, X+wRod, heightMy/2+hRod/2+40);
-                for(float i=X;i<X+wRod;i+=wRod/10)
-                    drawArrow(p,i,heightMy/2+hRod/2+40,i,heightMy/2+hRod/2,4);
+                drawArrow(p,X+wRod,heightMy/2,X+wRod-wRod/10,heightMy/2,5);
+                p.drawText(X+wRod/3, heightMy/2 -15,"q="+str.setNum(rods[k].Fx));
             }
         }
     }
@@ -262,7 +233,7 @@ void Construction::drawWall(QPainter &p, float x)
     if(width()-x<=40)
     {
         for(double k = 3*heightMy/4; k >= heightMy/4; k -= 10)
-            p.drawLine(x, k-10, x+10, k);
+            p.drawLine(x, k, x+10, k+10);
     }
     else
     {
@@ -279,9 +250,8 @@ void Construction::changeMapRods(int numOfRod, QVector<float> set)
     rod.secondNod=numOfRod+1;
     rod.len=set[1];
     rod.height=set[0];
-    rod.A=set[2];
-    rod.B=set[3];
-    rod.E=set[4];
+    rod.E=set[2];
+    rod.Fx=set[3];
     rods.push_back(rod);
     update();
 }
@@ -289,7 +259,7 @@ void Construction::changeMapRods(int numOfRod, QVector<float> set)
 void Construction::changeMapLoads(QVector<float> set)
 {
     //Заполняем вектор нагрузок:
-    Load load(set[0],set[1],set[2],set[3],set[4]);
+    Load load(set[0],set[1],set[2]);
     loads.push_back(load);
     update();
 }

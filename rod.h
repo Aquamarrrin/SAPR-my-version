@@ -5,13 +5,12 @@ class Rod
 {
 public:
     Rod();
-    Rod(int fn, int sn, float len, float height, float A, float B, float E, float coord);
+    Rod(int fn, int sn, float len, float height, float E, float coord);
     int firstNod;
     int secondNod;
     float len;
     float height;
-    float A;
-    float B;
+    float Fx;
     float E;
     float coord;
 };
