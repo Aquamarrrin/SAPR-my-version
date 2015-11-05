@@ -292,11 +292,61 @@ void PreProcWindow::showConstruction()
 //Назад в меню
 void PreProcWindow::backToMenu()
 {
+    QFile file("tmpFileOfTables.txt");
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        if(tableRodSettings->rowCount()!=1)
+        {
+            QTextStream stream(&file);
+            stream<<"Rods:\n";
+            for (int i=0;i<tableRodSettings->rowCount();i++)
+            {
+                for (int j=0;j<tableRodSettings->columnCount();j++)
+                    stream<<tableRodSettings->item(i,j)->text()<<";";
+                stream<<"\n";
+            stream<<"\n";
+            }
+            stream<<"Loads:\n";
+            if(tableLoad->rowCount()!=0)
+                for (int i=0;i<tableLoad->rowCount();i++)
+                {
+                    for (int j=0;j<tableLoad->columnCount();j++)
+                        stream<<tableLoad->item(i,j)->text()<<";";
+                    stream<<"\n";
+                }
+            stream.flush();
+
+            file.close();
+        }
+    }
+
     MainWindow* mw = new MainWindow();
     mw->takeValues(constr->getVecRod(),constr->getVecLoad());
     mw->startMenu();
     mw->show();
     this->close();
+}
+
+//Открываем временный файл
+void PreProcWindow::openTmpFile()
+{
+    fileOfTablesText.clear();
+    QFile file("tmpFileOfTables.txt");
+    if (file.open(QIODevice::ReadOnly)){
+
+    QTextStream stream(&file);
+    while (stream.atEnd() == false)
+    {
+        QString strTxt=stream.readLine();
+        fileOfTablesText.push_back(strTxt);
+    }
+    file.close();
+
+    }
+
+    if(fileOfTablesText.size()!=0)
+        parseFileOfTablesText();
+
 }
 
 
@@ -347,25 +397,29 @@ void PreProcWindow::saveFile()
             QMessageBox::critical(this,tr("Error"),tr("Сохранение файла невозможно"));
             return;
         } else {
-            QTextStream stream(&file);
-            stream<<"Rods:\n";
-            for (int i=0;i<tableRodSettings->rowCount();i++)
+            if(tableRodSettings->rowCount()!=1)
             {
-                for (int j=0;j<tableRodSettings->columnCount();j++)
-                    stream<<tableRodSettings->item(i,j)->text()<<";";
+                QTextStream stream(&file);
+                stream<<"Rods:\n";
+                for (int i=0;i<tableRodSettings->rowCount();i++)
+                {
+                    for (int j=0;j<tableRodSettings->columnCount();j++)
+                        stream<<tableRodSettings->item(i,j)->text()<<";";
+                    stream<<"\n";
+                }
                 stream<<"\n";
-            }
-            stream<<"\n";
-            stream<<"Loads:\n";
-            for (int i=0;i<tableLoad->rowCount();i++)
-            {
-                for (int j=0;j<tableLoad->columnCount();j++)
-                    stream<<tableLoad->item(i,j)->text()<<";";
-                stream<<"\n";
-            }
-            stream.flush();
+                stream<<"Loads:\n";
+                if(tableLoad->rowCount()!=0)
+                    for (int i=0;i<tableLoad->rowCount();i++)
+                    {
+                        for (int j=0;j<tableLoad->columnCount();j++)
+                            stream<<tableLoad->item(i,j)->text()<<";";
+                        stream<<"\n";
+                    }
+                stream.flush();
 
-            file.close();
+                file.close();
+            }
         }
     }
 }

@@ -254,6 +254,18 @@ void Construction::drawWall(QPainter &p, float x)
     }
 }
 
+void Construction::setMapRods(QVector<Rod> set)
+{
+    rods.clear();
+    rods=set;
+}
+
+void Construction::setMapLoads(QVector<Load> set)
+{
+    loads.clear();
+    loads=set;
+}
+
 void Construction::changeMapRods(int numOfRod, QVector<float> set)
 {
     //Заполняем вектор стержней:

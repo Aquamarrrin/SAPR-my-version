@@ -24,6 +24,7 @@ public:
     explicit PreProcWindow(QString filePath = "" ,QWidget *parent = 0);
     ~PreProcWindow();
     Construction* getConstr();
+    void openTmpFile();
 
 private:
     QVBoxLayout* layoutV;
@@ -31,34 +32,34 @@ private:
 
     QPushButton* btnDraw;
 
-    QSlider* numNodes;
-    QSlider* numLoads;
+    QSlider* numNodes; //Кол-во строк в таблице стержней
+    QSlider* numLoads; //Кол-во строк в таблице нагрузок
 
-    QTableWidget* tableRodSettings;
-    QTableWidget* tableLoad;
+    QTableWidget* tableRodSettings; //Таблица стержней и их параметров
+    QTableWidget* tableLoad; //Таблица нагрузок на узлы в стержнях
 
-    Construction* constr;
+    Construction* constr; //Виджет конструкции, где и происходитвся отрисовка
+    QVector<QString> fileOfTablesText; //Вектор , содержащий текст открытого файла
 
-    QVector<QString> fileOfTablesText;
+    bool isFilled(int row, QTableWidget *table); //Проверка на заполненность строки в таблице
+    bool isNotEmpty(int row, QTableWidget *table); //Проверка на не пустоту строки в таблице
+    bool isExist(int row, int column, QTableWidget *table); //Проверка на существование элемента в таблице
+    bool isNumber(const QString &str); //Проверка на соответствие строки числу
 
-    bool isFilled(int row, QTableWidget *table);
-    bool isNotEmpty(int row, QTableWidget *table);
-    bool isExist(int row, int column, QTableWidget *table);
-    bool isNumber(const QString &str);
-
-    void parseFileOfTablesText();
+    void parseFileOfTablesText(); //Парсер файла
+    //void setValuesOfTableRods(); //Передаём вектор стержней и записываем его параметры в соответствую таблицу
 
 signals:
 
 public slots:
-    void createTableRod(int nNodes);
-    void createTableLoad(int nLoads);
-    void showConstruction();
-    void backToMenu();
+    void createTableRod(int nNodes); //Создаём таблицу стержней
+    void createTableLoad(int nLoads); //Создаём таблицу нагрузок
+    void showConstruction(); //Передаём все необходимые параметры в конструкцию и отрисовываем её
+    void backToMenu(); //Возврат в меню выбора процессоров
 
 private slots:
-    void saveFile();
-    void openFile();
+    void saveFile(); //Сохранение файла
+    void openFile(); //Открытие файла
 
 
 };

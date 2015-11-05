@@ -125,6 +125,7 @@ void MainWindow::backToMainMenu()
 void MainWindow::loadPreProc()
 {
     PreProcWindow* pw = new PreProcWindow();
+    pw->openTmpFile();
     pw->show();
     this->close();
 }
@@ -134,6 +135,18 @@ void MainWindow::loadProc()
     if(rods.size()!=0)
     {
         ProcCalculations* calc = new ProcCalculations(rods,loads);
+        QMessageBox* msg = new QMessageBox();
+        msg->setText("Все расчёты успешно произведены! Сохранить?");
+        this->matrixA.clear();
+        this->matrixB.clear();
+        this->matrixD.clear();
+        this->matrixA=calc->matrixA;
+        this->matrixB=calc->matrixB;
+        this->matrixD=calc->matrixD;
+        QPushButton* btnSave = msg->addButton("Да",QMessageBox::YesRole);
+        connect(btnSave,SIGNAL(clicked()),this,SLOT(saveFile()));
+        msg->addButton("Нет",QMessageBox::NoRole);
+        msg->show();
     }
 }
 void MainWindow::showThisMenu()
@@ -147,6 +160,51 @@ void MainWindow::openFile()
     PreProcWindow* pw = new PreProcWindow(fileName);
     pw->show();
     this->close();
+}
+
+void MainWindow::saveFile()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "",
+                                                    tr("Text Files (*.txt)"));
+
+    if (fileName != "")
+    {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QMessageBox::critical(this,tr("Error"),tr("Сохранение файла невозможно"));
+            return;
+        }
+        else
+        {
+            QTextStream stream(&file);
+            stream<<"Matrix [A]:\n";
+            for (int i=0;i<matrixA.size();i++)
+            {
+                for (int j=0;j<matrixA[i].size();j++)
+                    stream<<(new QString())->QString::setNum(matrixA[i][j])<<";";
+                            stream<<"\n";
+            }
+            stream<<"\n";
+            stream<<"Vector {B}:\n";
+            for (int i=0;i<matrixB.size();i++)
+            {
+                stream<<(new QString())->QString::setNum(matrixB[i])<<";";
+                stream<<"\n";
+            }
+            stream<<"\n";
+            stream<<"Vector {D}:\n";
+            for (int i=0;i<matrixD.size();i++)
+            {
+                stream<<(new QString())->QString::setNum(matrixD[i])<<";";
+                stream<<"\n";
+            }
+            stream.flush();
+
+            file.close();
+
+        }
+    }
 }
 
 void MainWindow::takeValues(QVector<Rod> rods, QVector<Load> loads)
@@ -167,5 +225,6 @@ void MainWindow::clean( )
 
 MainWindow::~MainWindow()
 {
-
+    QFile file("tmpFileOfTables.txt");
+    file.remove();
 }

@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLayout>
 #include <QMenu>
+#include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
 #include "construction.h"
@@ -32,6 +33,10 @@ private:
     QVector<Rod> rods;
     QVector<Load> loads;
 
+    QVector<QVector<float> > matrixA;
+    QVector<float> matrixB;
+    QVector<float> matrixD;
+
     void clean();
 signals:
 
@@ -43,6 +48,7 @@ public slots:
 
 private slots:
     void openFile();
+    void saveFile();
 
 };
 

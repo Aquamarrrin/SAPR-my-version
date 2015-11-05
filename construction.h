@@ -17,6 +17,9 @@ public:
     explicit Construction(QWidget *parent = 0);
     ~Construction();
 
+    void setMapRods(QVector<Rod> set);  //Задаём вектор стержней
+    void setMapLoads(QVector<Load> set); //Задаём вектор нагрузок
+
     void changeMapRods(int numOfRod, QVector<float> set);  //Добавляем параметры стержней в вектор
     void clearMapRods(); //Очищаем вектор стержней
 
