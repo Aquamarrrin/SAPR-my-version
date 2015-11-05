@@ -7,7 +7,8 @@ HEADERS += \
     mainwindow.h \
     construction.h \
     rod.h \
-    load.h
+    load.h \
+    proccalculations.h
 
 SOURCES += \
     preprocwindow.cpp \
@@ -15,6 +16,10 @@ SOURCES += \
     main.cpp \
     construction.cpp \
     rod.cpp \
-    load.cpp
+    load.cpp \
+    proccalculations.cpp
 
 FORMS +=
+
+RESOURCES += \
+    myres.qrc

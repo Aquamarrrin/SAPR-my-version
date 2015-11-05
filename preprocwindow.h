@@ -13,6 +13,7 @@
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QDebug>
+#include <QRegExp>
 #include "mainwindow.h"
 #include "construction.h"
 
@@ -20,8 +21,9 @@ class PreProcWindow : public QWidget
 {
     Q_OBJECT
 public:
-    //PreProcWindow(const QString filePath = "" ,QWidget *parent = 0);
-    explicit PreProcWindow(QWidget *parent = 0);
+    explicit PreProcWindow(QString filePath = "" ,QWidget *parent = 0);
+    ~PreProcWindow();
+    Construction* getConstr();
 
 private:
     QVBoxLayout* layoutV;
@@ -42,6 +44,7 @@ private:
     bool isFilled(int row, QTableWidget *table);
     bool isNotEmpty(int row, QTableWidget *table);
     bool isExist(int row, int column, QTableWidget *table);
+    bool isNumber(const QString &str);
 
     void parseFileOfTablesText();
 

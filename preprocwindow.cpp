@@ -1,7 +1,7 @@
 #include "preprocwindow.h"
 
 //При создании нового файла
-PreProcWindow::PreProcWindow(QWidget *parent) :
+PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     QWidget(parent)
 {
     this->setMinimumSize(900,650);
@@ -11,20 +11,32 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
 
     QMenuBar* mnuBar=  new QMenuBar();
     QMenu * menu = new QMenu("Файл");
-    menu->addAction("Сохранить",this,SLOT(saveFile()));
+    QIcon icoExit(":/icons/exit.ico");
+    QIcon icoSave(":/icons/save.ico");
+    menu->addAction(icoSave,"Сохранить",this,SLOT(saveFile()));
     menu->addAction("Загрузить",this,SLOT(openFile()));
     menu->addSeparator();
-    menu->addAction("Выход",this,SLOT(close()));
+    menu->addAction(icoExit,"Выход",this,SLOT(close()));
     mnuBar->addMenu(menu);
 
-    btnDraw = new QPushButton("Draw");
+    QIcon icoNext(":/icons/next_arrow_white.ico");
+    btnDraw = new QPushButton(icoNext,"Рисовать");
     btnDraw->setMaximumWidth(500);
     btnDraw->setMinimumWidth(350);
     btnDraw->setFixedHeight(30);
+    btnDraw->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
+                           "QPushButton:hover { background-color: black; color: white;}"
+                           "QPushButton:pressed { background-color: black; color: white;}"
+                           "QPushButton:disabled { background-color: white; border-radius:5px;}");
     QObject::connect(btnDraw,SIGNAL(clicked()),this,SLOT(showConstruction()));
 
-    QPushButton* btnBack = new QPushButton("Назад");
+    QIcon icoBack(":/icons/back_arrow_white.ico");
+    QPushButton* btnBack = new QPushButton(icoBack,"Назад");
     btnBack->setFixedHeight(30);
+    btnBack->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
+                           "QPushButton:hover { background-color: black; color: white;}"
+                           "QPushButton:pressed { background-color: black; color: white;}"
+                           "QPushButton:disabled { background-color: white; border-radius:5px;}");
     QObject::connect(btnBack,SIGNAL(clicked()),this,SLOT(backToMenu()));
 
     //Поля для ввода количества узлов, стержней и нагрузок
@@ -80,6 +92,25 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     (tableRodSettings->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
     (tableRodSettings->horizontalHeader())->setMinimumSectionSize(50);
 
+    if(filePath!="")
+    {
+        fileOfTablesText.clear();
+        QFile file(filePath);
+        if (!file.open(QIODevice::ReadOnly)){
+            QMessageBox::critical(this,tr("Error"),tr("Открытие файла невозможно"));
+            return;
+        }
+        QTextStream stream(&file);
+        while (stream.atEnd() == false)
+        {
+            QString strTxt=stream.readLine();
+            fileOfTablesText.push_back(strTxt);
+        }
+        file.close();
+
+        parseFileOfTablesText();
+
+    }
     //Отрисовка конструкции:
     constr = new Construction();
     constr->setMinimumWidth(500);
@@ -99,124 +130,11 @@ PreProcWindow::PreProcWindow(QWidget *parent) :
     layoutH->addWidget(constr,1);
     this->setLayout(layoutH);
 }
-/*
-//При открытии существующего файла
-PreProcWindow::PreProcWindow(const QString filePath, QWidget *parent) :
-    QWidget(parent)
+
+Construction* PreProcWindow::getConstr()
 {
-    this->setMinimumSize(900,650);
-
-    layoutV = new QVBoxLayout();
-    layoutH = new QHBoxLayout();
-
-    QMenuBar* mnuBar=  new QMenuBar();
-    QMenu * menu = new QMenu("Файл");
-    menu->addAction("Сохранить");
-    menu->addAction("Загрузить");
-    menu->addSeparator();
-    menu->addAction("Выход");
-    mnuBar->addMenu(menu);
-
-    btnDraw = new QPushButton("Draw");
-    btnDraw->setMaximumWidth(500);
-    btnDraw->setMinimumWidth(350);
-    btnDraw->setFixedHeight(30);
-    QObject::connect(btnDraw,SIGNAL(clicked()),this,SLOT(showConstruction()));
-
-    QPushButton* btnBack = new QPushButton("Назад");
-    btnBack->setFixedHeight(30);
-    QObject::connect(btnBack,SIGNAL(clicked()),this,SLOT(backToMenu()));
-
-    //Поля для ввода количества узлов, стержней и нагрузок
-    numNodes = new QSlider();
-    numNodes->setMaximumWidth(500);
-    numNodes->setMinimum(1);
-    numNodes->setMaximum(50);
-    numNodes->setTickPosition(QSlider::TicksBelow);
-    numNodes->setTickInterval(2);
-    numNodes->setOrientation(Qt::Horizontal);
-    connect(numNodes,SIGNAL(valueChanged(int)),this,SLOT(createTableRod(int)));
-
-    numLoads = new QSlider();
-    numLoads->setMaximumWidth(500);
-    numLoads->setOrientation(Qt::Horizontal);
-    numLoads->setMinimum(0);
-    numLoads->setMaximum(50);
-    numLoads->setTickPosition(QSlider::TicksBelow);
-    numLoads->setTickInterval(2);
-    connect(numLoads,SIGNAL(valueChanged(int)),this,SLOT(createTableLoad(int)));
-
-    //Таблицы:
-
-    //Таблица нагрузок:
-    tableLoad = new QTableWidget(this);
-    tableLoad->setMinimumWidth(350);
-    tableLoad->setMaximumWidth(500);
-    tableLoad->setColumnCount(3);
-    tableLoad->verticalHeader()->hide();
-    QTableWidgetItem* itemLoadHor1 = new QTableWidgetItem("№ узла");
-    tableLoad->setHorizontalHeaderItem(0,itemLoadHor1);
-    QTableWidgetItem* itemLoadHor2 = new QTableWidgetItem("Fx");
-    tableLoad->setHorizontalHeaderItem(1,itemLoadHor2);
-    QTableWidgetItem* itemLoadHor3 = new QTableWidgetItem("Заделка");
-    tableLoad->setHorizontalHeaderItem(2,itemLoadHor3);
-    (tableLoad->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
-    (tableLoad->horizontalHeader())->setMinimumSectionSize(50);
-
-    //Таблица параметров стержней:
-    tableRodSettings = new QTableWidget(this);
-    tableRodSettings->setMinimumWidth(350);
-    tableRodSettings->setMaximumWidth(500);
-    tableRodSettings->setColumnCount(4);
-    tableRodSettings->setRowCount(1);
-    QTableWidgetItem* itemParamHor1 = new QTableWidgetItem("A стержня");
-    tableRodSettings->setHorizontalHeaderItem(0,itemParamHor1);
-    QTableWidgetItem* itemParamHor2 = new QTableWidgetItem("L стержня");
-    tableRodSettings->setHorizontalHeaderItem(1,itemParamHor2);
-    QTableWidgetItem* itemParamHor3 = new QTableWidgetItem("E стержня");
-    tableRodSettings->setHorizontalHeaderItem(2,itemParamHor3);
-    QTableWidgetItem* itemParamHor4 = new QTableWidgetItem("Fx распр");
-    tableRodSettings->setHorizontalHeaderItem(3,itemParamHor4);
-    (tableRodSettings->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
-    (tableRodSettings->horizontalHeader())->setMinimumSectionSize(50);
-
-    //заполнение таблицы из файла
-//    QString line;
-//    QFile file(filePath);
-//    if(file.open(QIODevice::ReadOnly | QIODevice::Text))
-//    {
-//        QDataStream dataStream(&file);
-
-//        for(int i = 0; !dataStream.atEnd(); i++)
-//        {
-//            line = dataStream.readLine();
-//            QTableWidgetItem *item = new QTableWidgetItem();
-//            item->setText(line);
-//            tableRodSettings->setItem(0,i,item);
-//        }
-//        file.close();
-//    }
-
-    //Отрисовка конструкции:
-    constr = new Construction();
-    constr->setMinimumWidth(500);
-    constr->setFixedHeight(400);
-
-    //Добавляем все элементы на лэйаут
-    layoutH->setMenuBar(mnuBar);
-
-    layoutV->addWidget(numNodes);
-    layoutV->addWidget(tableRodSettings);
-    layoutV->addWidget(numLoads);
-    layoutV->addWidget(tableLoad);
-    layoutV->addWidget(btnDraw);
-    layoutV->addWidget(btnBack);
-
-    layoutH->addLayout(layoutV,1);
-    layoutH->addWidget(constr,1);
-    this->setLayout(layoutH);
+    return constr;
 }
-*/
 
 //Изменяем колличество строк в таблице стержней
 void PreProcWindow::createTableRod(int nNodes)
@@ -238,7 +156,6 @@ void PreProcWindow::createTableRod(int nNodes)
         numNodes->setValue(tableRodSettings->rowCount());
     }
 }
-
 
 //Изменяем колличество строк в таблице нагрузок
 void PreProcWindow::createTableLoad(int nLoads)
@@ -283,9 +200,9 @@ void PreProcWindow::showConstruction()
             bool ok=false;
             for(int i=0;i<tableRodSettings->columnCount();i++)
             {
-                if(i==tableRodSettings->columnCount()-1 || tableRodSettings->item(row,i)->text().toInt()>=0)
+                if((isNumber(tableRodSettings->item(row,i)->text())) && (i==tableRodSettings->columnCount()-1 || tableRodSettings->item(row,i)->text().toFloat()>0))
                 {
-                    vec.push_back(tableRodSettings->item(row,i)->text().toInt());
+                    vec.push_back(tableRodSettings->item(row,i)->text().toFloat());
                     ok=true;
                 }
                 else
@@ -306,7 +223,6 @@ void PreProcWindow::showConstruction()
                 break;
             }
         }
-    constr->update();
 
     //Меняем или задаем параметры нагрузок
     constr->clearMapLoads();
@@ -318,28 +234,45 @@ void PreProcWindow::showConstruction()
             {
                 QVector<float> vec;
                 bool ok=false;
-                for(int i=0;i<tableLoad->columnCount();i++)
+                bool ok2=true;
+
+                if(isNumber(tableLoad->item(row,0)->text()) && tableLoad->item(row,0)->text().toFloat()>0 && tableLoad->item(row,0)->text().toFloat()<=tableRodSettings->rowCount()+1)
+                    for(int i=0;i<tableLoad->columnCount();i++)
+                    {
+                        if(isNumber(tableLoad->item(row,i)->text()))
+                        {
+                            vec.push_back(tableLoad->item(row,i)->text().toFloat());
+                            ok=true;
+                        }
+                        else
+                        {
+                            ok=false;
+                            ok2=false;
+                            tableLoad->setCurrentCell(row,i);
+                            QMessageBox* msg = new QMessageBox();
+                            msg->setText("В таблице нагрузок нельзя вводить буквы и другие нечисловые символы!");
+                            msg->show();
+                            constr->clearMapLoads();
+                            break;
+                        }
+                    }
+                else
                 {
-                    if(tableLoad->item(row,0)->text().toInt()>0)
-                    {
-                        vec.push_back(tableLoad->item(row,i)->text().toInt());
-                        ok=true;
-                    }
-                    else
-                    {
-                        ok=false;
-                        break;
-                    }
+                    ok=false;
                 }
+
                 if(ok)
                     constr->changeMapLoads(vec);
                 else
                 {
-                    tableLoad->setCurrentCell(row,0);
-                    QMessageBox* msg = new QMessageBox();
-                    msg->setText("В таблице нагрузок неправильно введен номер узла");
-                    msg->show();
-                    constr->clearMapLoads();
+                    if(ok2)
+                    {
+                        tableLoad->setCurrentCell(row,0);
+                        QMessageBox* msg = new QMessageBox();
+                        msg->setText("В таблице нагрузок неправильно введен номер узла");
+                        msg->show();
+                        constr->clearMapLoads();
+                    }
                     break;
                 }
             }
@@ -360,6 +293,7 @@ void PreProcWindow::showConstruction()
 void PreProcWindow::backToMenu()
 {
     MainWindow* mw = new MainWindow();
+    mw->takeValues(constr->getVecRod(),constr->getVecLoad());
     mw->startMenu();
     mw->show();
     this->close();
@@ -388,9 +322,15 @@ bool PreProcWindow::isNotEmpty(int row, QTableWidget* table)
 bool PreProcWindow::isExist(int row, int column, QTableWidget *table)
 {
     for(int i=0;i<table->rowCount();i++)
-        if(i!=row && table->item(row,column)->text().toInt()==table->item(i,column)->text().toInt())
+        if(i!=row && table->item(row,column)->text().toFloat()==table->item(i,column)->text().toFloat())
             return true;
     return false;
+}
+
+bool PreProcWindow::isNumber(const QString &str)
+{
+    QRegExp reg("[0-9]+");
+    return reg.indexIn(str) != -1;
 }
 
 //Сохранем в текстовый файл данные таблиц
@@ -430,6 +370,7 @@ void PreProcWindow::saveFile()
     }
 }
 
+//Открываем уже сохраненный файл
 void PreProcWindow::openFile()
 {
     fileOfTablesText.clear();
@@ -458,6 +399,29 @@ void PreProcWindow::parseFileOfTablesText()
 {
     tableRodSettings->clear();
     tableLoad->clear();
+    //Таблица нагрузок:
+    tableLoad->verticalHeader()->hide();
+    QTableWidgetItem* itemLoadHor1 = new QTableWidgetItem("№ узла");
+    tableLoad->setHorizontalHeaderItem(0,itemLoadHor1);
+    QTableWidgetItem* itemLoadHor2 = new QTableWidgetItem("Fx");
+    tableLoad->setHorizontalHeaderItem(1,itemLoadHor2);
+    QTableWidgetItem* itemLoadHor3 = new QTableWidgetItem("Заделка");
+    tableLoad->setHorizontalHeaderItem(2,itemLoadHor3);
+    (tableLoad->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
+    (tableLoad->horizontalHeader())->setMinimumSectionSize(50);
+
+    //Таблица параметров стержней:
+    QTableWidgetItem* itemParamHor1 = new QTableWidgetItem("A стержня");
+    tableRodSettings->setHorizontalHeaderItem(0,itemParamHor1);
+    QTableWidgetItem* itemParamHor2 = new QTableWidgetItem("L стержня");
+    tableRodSettings->setHorizontalHeaderItem(1,itemParamHor2);
+    QTableWidgetItem* itemParamHor3 = new QTableWidgetItem("E стержня");
+    tableRodSettings->setHorizontalHeaderItem(2,itemParamHor3);
+    QTableWidgetItem* itemParamHor4 = new QTableWidgetItem("Fx распр");
+    tableRodSettings->setHorizontalHeaderItem(3,itemParamHor4);
+    (tableRodSettings->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
+    (tableRodSettings->horizontalHeader())->setMinimumSectionSize(50);
+
     int i=0;
     int numOfRows=0;
     while (numLoads->value()!=0)
@@ -525,22 +489,6 @@ void PreProcWindow::parseFileOfTablesText()
     numLoads->setValue(numOfRows);
 }
 
-
-//заполнение таблицы из файла
-//QString line;
-//QFile file(QApplication::applicationDirPath()+"/log.txt");
-//if(file.open(QIODevice::ReadOnly | QIODevice::Text))
-//{
-//    QTextStream textStream(&file);
-
-//    for(int i = 0; !textStream.atEnd(); i++)
-//    {
-//        line = textStream.readLine();    // Читать лучше из потока, если уже его создали. :)
-//        QTableWidgetItem *item = new QTableWidgetItem();
-//        item->setText(line);
-//        ui->tableWidget->setItem(0,i,item);
-//    }
-//    file.close();
-//}
-
+PreProcWindow::~PreProcWindow()
+{}
 

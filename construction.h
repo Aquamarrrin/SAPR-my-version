@@ -23,6 +23,9 @@ public:
     void changeMapLoads(QVector<float> set);  //Добавляем параметры нагрузок в вектор
     void clearMapLoads();  //Очищаем вектор нагрузок
 
+    QVector<Rod> getVecRod();
+    QVector<Load> getVecLoad();
+
 private:
     QTimer* timer;
 

@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>next_arrow_black.ico</file>
+        <file>next_arrow_white.ico</file>
+        <file>save.ico</file>
+        <file>back_arrow_black.ico</file>
+        <file>back_arrow_white.ico</file>
+        <file>exit.ico</file>
+    </qresource>
+</RCC>

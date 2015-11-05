@@ -21,7 +21,7 @@ void Construction::paintConstruction(QPainter &p)
     if(rods.size()>0)
     {
         float koeffW = width()/(1.07*findUserWidth(rods));
-        float koeffH=heightMy/(1.5*findMaxHeight(rods));
+        float koeffH=heightMy/(1.8*findMaxHeight(rods));
 
         QRect borders(0, 0, width()-1, height()-1);
         QColor gridColor = "#000";
@@ -63,12 +63,9 @@ void Construction::paintConstruction(QPainter &p)
             str1=str1.setNum(rods[k].height);
             str1="A="+str1;
             p.drawText(X+5, heightMy/2 + hRod/2+45,str1);
-
-
-            //Отрисовка надписей над стержнем
             str=str.setNum(rods[k].len);
             str="L="+str;
-            p.drawText(X+wRod/3, heightMy/2 - hRod/2-10,str);
+            p.drawText(X+5, heightMy/2 + hRod/2+60,str);
 
             rods[k].coord=X;
             X+=wRod;
@@ -92,6 +89,7 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
 {
     for(int k = 0; k <loads.size() ; k++)
     {
+        float deltaX=0;
         //Отрисовка сосредоточенной нагрузки
         if(loads[k].firstNode>0 && loads[k].firstNode<=rods.size()+1)
         {
@@ -127,26 +125,40 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
             {
                 if(loads[k].F1>0)
                 {
-                    drawArrow(p,X,heightMy/2,X+20,heightMy/2,10);
-                    p.drawText(X, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
+                    drawArrow(p,X,heightMy/2,X+30,heightMy/2,10);
+                    //p.drawText(X+2, heightMy/2 +20,"F="+str.setNum(loads[k].F1));
+                    p.drawText(X+5, heightMy/2 + hRod/2+75+deltaX,"F="+str.setNum(loads[k].F1));
+                    deltaX+=15;
                 }
                 if(loads[k].F1<0)
                 {
-                    drawArrow(p,X,heightMy/2,X-20,heightMy/2,10);
-                    p.drawText(X-20, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
+                    if(loads[k].firstNode==1)
+                    {
+                        drawArrow(p,X,heightMy/2,X-15,heightMy/2,10);
+                        //p.drawText(X-15, heightMy/2 +20,"F="+str.setNum(loads[k].F1));
+                    }
+                    else
+                    {
+                        drawArrow(p,X,heightMy/2,X-30,heightMy/2,10);
+                        //p.drawText(X-30, heightMy/2 +20,"F="+str.setNum(loads[k].F1));
+                    }
+                    p.drawText(X+5, heightMy/2 + hRod/2+75+deltaX,"F="+str.setNum(loads[k].F1));
+                    deltaX+=15;
                 }
             }
             else
             {
                 if(loads[k].F1>0)
                 {
-                    drawArrow(p,X+wRod,heightMy/2,X+wRod+20,heightMy/2,10);
-                    p.drawText(X+wRod, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
+                    drawArrow(p,X+wRod,heightMy/2,X+wRod+15,heightMy/2,10);
+                    p.drawText(X+5, heightMy/2 + hRod/2+75+deltaX,"F="+str.setNum(loads[k].F1));
+                    deltaX+=15;
                 }
                 if(loads[k].F1<0)
                 {
-                    drawArrow(p,X+wRod,heightMy/2,X+wRod-20,heightMy/2,10);
-                    p.drawText(X+wRod-20, heightMy/2 +15,"F="+str.setNum(loads[k].F1));
+                    drawArrow(p,X+wRod,heightMy/2,X+wRod-30,heightMy/2,10);
+                    p.drawText(X+5, heightMy/2 + hRod/2+75+deltaX,"F="+str.setNum(loads[k].F1));
+                    deltaX+=15;
                 }
             }
             p.setBrush(Qt::NoBrush);
@@ -160,10 +172,10 @@ void Construction::paintLoads(QPainter &p, float koeffH, float koeffW)
                     drawWall(p,X);
             }
         }
-
     }
+
     //Отрисовка распределенной нагрузки
-    for(int k=0;k<rods.size();k++)
+    for(int k = 0; k <rods.size() ; k++)
     {
         if(rods[k].Fx!=0)
         {
@@ -253,7 +265,7 @@ void Construction::changeMapRods(int numOfRod, QVector<float> set)
     rod.E=set[2];
     rod.Fx=set[3];
     rods.push_back(rod);
-    update();
+    //update();
 }
 
 void Construction::changeMapLoads(QVector<float> set)
@@ -261,7 +273,7 @@ void Construction::changeMapLoads(QVector<float> set)
     //Заполняем вектор нагрузок:
     Load load(set[0],set[1],set[2]);
     loads.push_back(load);
-    update();
+    //update();
 }
 
 
@@ -275,6 +287,16 @@ void Construction::clearMapLoads()
     loads.clear();
 }
 
+
+QVector<Rod> Construction::getVecRod()
+{
+    return rods;
+}
+
+QVector<Load> Construction::getVecLoad()
+{
+    return loads;
+}
 
 //Находим наибольшую высоту среди стержней
 float Construction::findMaxHeight(QVector<Rod> set)
