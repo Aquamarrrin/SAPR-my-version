@@ -27,10 +27,7 @@ public:
     void openTmpFile();
 
 private:
-    QVBoxLayout* layoutV;
-    QHBoxLayout* layoutH;
-
-    QPushButton* btnDraw;
+    QGridLayout* layoutG;
 
     QSlider* numNodes; //Кол-во строк в таблице стержней
     QSlider* numLoads; //Кол-во строк в таблице нагрузок
@@ -60,6 +57,10 @@ public slots:
 private slots:
     void saveFile(); //Сохранение файла
     void openFile(); //Открытие файла
+    void addRod(); //Добавляем стержень по нажатию кнопки
+    void addLoad(); //Добавляем нагрузку по нажатию кнопки
+    void delRod(); //Удалить стержень по нажатию кнопки
+    void delLoad(); //Удалить нагрузку по нажатию кнопки
 
 
 };

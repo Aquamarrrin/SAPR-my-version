@@ -6,11 +6,19 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
 {
     this->setMinimumSize(900,650);
 
-    layoutV = new QVBoxLayout();
-    layoutH = new QHBoxLayout();
+    layoutG = new QGridLayout();
 
     QMenuBar* mnuBar=  new QMenuBar();
-    QMenu * menu = new QMenu("Файл");
+    mnuBar->setMinimumHeight(23);
+    mnuBar->setStyleSheet("QMenuBar{ background-color: white; border-radius:3px;}"
+                          " QMenuBar::item {margin:2px; padding: 4px 4px ; background: white; border-radius: 3px; width: 100px;}"
+                          "QMenuBar::item:selected { background: black;  color: white;}");
+    QMenu * menu = new QMenu("    Файл    ");
+    menu->setMinimumWidth(150);
+    menu->setStyleSheet("QMenu{border: 1px solid grey; background-color:white;}"
+                        "QMenu::item {margin:2px; padding: 2px 25px 2px 20px; border-radius:3px;}"
+                        "QMenu::item:selected {color: white;  background-color:black;}"
+                        "QMenu::separator { height: 1px; background:grey;}");
     QIcon icoExit(":/icons/exit.ico");
     QIcon icoSave(":/icons/save.ico");
     menu->addAction(icoSave,"Сохранить",this,SLOT(saveFile()));
@@ -20,8 +28,7 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     mnuBar->addMenu(menu);
 
     QIcon icoNext(":/icons/next_arrow_white.ico");
-    btnDraw = new QPushButton(icoNext,"Рисовать");
-    btnDraw->setMaximumWidth(500);
+    QPushButton* btnDraw = new QPushButton(icoNext,"Рисовать");
     btnDraw->setMinimumWidth(350);
     btnDraw->setFixedHeight(30);
     btnDraw->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
@@ -39,9 +46,40 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
                            "QPushButton:disabled { background-color: white; border-radius:5px;}");
     QObject::connect(btnBack,SIGNAL(clicked()),this,SLOT(backToMenu()));
 
+    QPushButton* btnAddRod = new QPushButton(icoBack,"Добавить");
+    btnAddRod->setFixedHeight(30);
+    btnAddRod->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
+                           "QPushButton:hover { background-color: black; color: white;}"
+                           "QPushButton:pressed { background-color: black; color: white;}"
+                           "QPushButton:disabled { background-color: white; border-radius:5px;}");
+    QObject::connect(btnAddRod,SIGNAL(clicked()),this,SLOT(addRod()));
+
+    QPushButton* btnAddLoad = new QPushButton(icoBack,"Добавить");
+    btnAddLoad->setFixedHeight(30);
+    btnAddLoad->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
+                           "QPushButton:hover { background-color: black; color: white;}"
+                           "QPushButton:pressed { background-color: black; color: white;}"
+                           "QPushButton:disabled { background-color: white; border-radius:5px;}");
+    QObject::connect(btnAddLoad,SIGNAL(clicked()),this,SLOT(addLoad()));
+
+    QPushButton* btnDelRod = new QPushButton(icoBack,"Удалить");
+    btnDelRod->setFixedHeight(30);
+    btnDelRod->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
+                           "QPushButton:hover { background-color: black; color: white;}"
+                           "QPushButton:pressed { background-color: black; color: white;}"
+                           "QPushButton:disabled { background-color: white; border-radius:5px;}");
+    QObject::connect(btnDelRod,SIGNAL(clicked()),this,SLOT(delRod()));
+
+    QPushButton* btnDelLoad = new QPushButton(icoBack,"Удалить");
+    btnDelLoad->setFixedHeight(30);
+    btnDelLoad->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
+                           "QPushButton:hover { background-color: black; color: white;}"
+                           "QPushButton:pressed { background-color: black; color: white;}"
+                           "QPushButton:disabled { background-color: white; border-radius:5px;}");
+    QObject::connect(btnDelLoad,SIGNAL(clicked()),this,SLOT(delLoad()));
+
     //Поля для ввода количества узлов, стержней и нагрузок
     numNodes = new QSlider();
-    numNodes->setMaximumWidth(500);
     numNodes->setMinimum(1);
     numNodes->setMaximum(50);
     numNodes->setTickPosition(QSlider::TicksBelow);
@@ -50,7 +88,6 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     connect(numNodes,SIGNAL(valueChanged(int)),this,SLOT(createTableRod(int)));
 
     numLoads = new QSlider();
-    numLoads->setMaximumWidth(500);
     numLoads->setOrientation(Qt::Horizontal);
     numLoads->setMinimum(0);
     numLoads->setMaximum(50);
@@ -63,7 +100,7 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     //Таблица нагрузок:
     tableLoad = new QTableWidget(this);
     tableLoad->setMinimumWidth(350);
-    tableLoad->setMaximumWidth(500);
+    tableLoad->setMinimumHeight(200);
     tableLoad->setColumnCount(3);
     tableLoad->verticalHeader()->hide();
     QTableWidgetItem* itemLoadHor1 = new QTableWidgetItem("№ узла");
@@ -78,7 +115,7 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     //Таблица параметров стержней:
     tableRodSettings = new QTableWidget(this);
     tableRodSettings->setMinimumWidth(350);
-    tableRodSettings->setMaximumWidth(500);
+    tableRodSettings->setMinimumHeight(200);
     tableRodSettings->setColumnCount(4);
     tableRodSettings->setRowCount(1);
     QTableWidgetItem* itemParamHor1 = new QTableWidgetItem("A стержня");
@@ -114,21 +151,26 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     //Отрисовка конструкции:
     constr = new Construction();
     constr->setMinimumWidth(500);
-    constr->setFixedHeight(400);
+    constr->setFixedHeight(300);
 
     //Добавляем все элементы на лэйаут
-    layoutH->setMenuBar(mnuBar);
+    layoutG->setMenuBar(mnuBar);
 
-    layoutV->addWidget(numNodes);
-    layoutV->addWidget(tableRodSettings);
-    layoutV->addWidget(numLoads);
-    layoutV->addWidget(tableLoad);
-    layoutV->addWidget(btnDraw);
-    layoutV->addWidget(btnBack);
+    layoutG->addWidget(numNodes,0,0,1,2);
+    layoutG->addWidget(tableRodSettings,1,0,1,2);
+    layoutG->addWidget(btnAddRod,2,0,1,1);
+    layoutG->addWidget(btnDelRod,2,1,1,1);
 
-    layoutH->addLayout(layoutV,1);
-    layoutH->addWidget(constr,1);
-    this->setLayout(layoutH);
+    layoutG->addWidget(numLoads,0,2,1,2);
+    layoutG->addWidget(tableLoad,1,2,1,2);
+    layoutG->addWidget(btnAddLoad,2,2,1,1);
+    layoutG->addWidget(btnDelLoad,2,3,1,1);
+
+    layoutG->addWidget(btnDraw,4,2,1,2);
+    layoutG->addWidget(btnBack,4,0,1,2);
+
+    layoutG->addWidget(constr,3,0,1,4);
+    this->setLayout(layoutG);
 }
 
 Construction* PreProcWindow::getConstr()
@@ -354,7 +396,7 @@ void PreProcWindow::openTmpFile()
 bool PreProcWindow::isFilled(int row, QTableWidget* table)
 {
     for(int i=0;i<table->columnCount();i++)
-        if(table->item(row,i)->text().isEmpty())
+        if(table->item(row,i)==0 || table->item(row,i)->text().isEmpty())
             return false;
     return true;
 }
@@ -371,9 +413,10 @@ bool PreProcWindow::isNotEmpty(int row, QTableWidget* table)
 //Проверяем пуста ли определенная ячейка в таблице
 bool PreProcWindow::isExist(int row, int column, QTableWidget *table)
 {
-    for(int i=0;i<table->rowCount();i++)
-        if(i!=row && table->item(row,column)->text().toFloat()==table->item(i,column)->text().toFloat())
-            return true;
+    if(table->item(row,column)!=0)
+        for(int i=0;i<table->rowCount();i++)
+            if(table->item(i,column)!=0 && i!=row && table->item(row,column)->text().toFloat()==table->item(i,column)->text().toFloat())
+                return true;
     return false;
 }
 
@@ -447,6 +490,40 @@ void PreProcWindow::openFile()
 
         parseFileOfTablesText();
     }
+}
+
+//Добавляем стержень
+void PreProcWindow::addRod()
+{
+    numNodes->setValue(numNodes->value()+1);
+}
+
+//Добавляем нагрузку
+void PreProcWindow::addLoad()
+{
+    numLoads->setValue(numLoads->value()+1);
+}
+
+//Удаляем стержень
+void PreProcWindow::delRod()
+{
+    int row=tableRodSettings->currentRow();
+    for(int i=0;i<tableRodSettings->columnCount();i++)
+        if(tableRodSettings->item(row,i)!=0)
+            tableRodSettings->item(row,i)->setText("");
+    tableRodSettings->removeRow(row);
+    numNodes->setValue(numNodes->value()-1);
+}
+
+//Удаляем нагрузку
+void PreProcWindow::delLoad()
+{
+    int row=tableLoad->currentRow();
+    for(int i=0;i<tableLoad->columnCount();i++)
+        if(tableLoad->item(row,i)!=0)
+            tableLoad->item(row,i)->setText("");
+    tableLoad->removeRow(row);
+    numLoads->setValue(numLoads->value()-1);
 }
 
 void PreProcWindow::parseFileOfTablesText()

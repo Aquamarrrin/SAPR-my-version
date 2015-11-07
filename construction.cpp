@@ -17,7 +17,7 @@ void Construction::paintEvent(QPaintEvent *)
 
 void Construction::paintConstruction(QPainter &p)
 {
-    heightMy=height()/2;
+    heightMy=4*height()/5;
     if(rods.size()>0)
     {
         float koeffW = width()/(1.07*findUserWidth(rods));
