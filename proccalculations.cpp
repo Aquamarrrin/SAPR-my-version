@@ -109,6 +109,33 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
         matrixD=multi(matrixE,matrixB,matrixD);
 
         qDebug()<<matrixD;
+
+        //Заполняем коэффициенты Ux для каждого стержня конструкции
+        for(int i=0;i<rods.size();i++)
+        {
+            QVector<float> vec;
+            vec.push_back(matrixD[i]);
+//            qDebug()<<matrixD[i+1]<<" - "<<matrixD[i]<<" = "<<matrixD[i+1]-matrixD[i];
+            vec.push_back((matrixD[i+1]-matrixD[i])/rods[i].len);
+            vec.push_back((rods[i].Fx*rods[i].len)/(2*rods[i].E*rods[i].height));
+            vec.push_back(1/rods[i].len);
+
+            matrixU.push_back(vec);
+        }
+
+        //Заполняем коэффициенты Nx для каждого стержня конструкции
+        for(int i=0;i<rods.size();i++)
+        {
+            QVector<float> vec;
+            vec.push_back((rods[i].E*rods[i].height)*(matrixD[i+1]-matrixD[i])/rods[i].len);
+            vec.push_back((rods[i].Fx*rods[i].len)/2);
+            vec.push_back(2/rods[i].len);
+
+            matrixN.push_back(vec);
+        }
+
+        //qDebug()<<matrixU;
+        //qDebug()<<matrixN;
     }
 }
 
@@ -158,8 +185,17 @@ QVector<QVector<float> > ProcCalculations::inversion(QVector<QVector<float> > A,
 QVector<float> ProcCalculations::multi(QVector<QVector<float> > A, QVector<float> B, QVector<float> D)
 {
     for (int i = 0; i < A.size(); i++)
+    {
         for (int j = 0; j < A.size(); j++)
+        {
             D[i] += A[i][j] * B[j];
+        }
+        D[i]*=10000;
+        D[i]=round(D[i]);
+        D[i]/=10000;/*
+        qDebug()<<D[i];
+        qDebug()<<" ------ ";*/
+    }
 
     return D;
 }

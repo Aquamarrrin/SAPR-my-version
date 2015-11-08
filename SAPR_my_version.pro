@@ -8,7 +8,8 @@ HEADERS += \
     construction.h \
     rod.h \
     load.h \
-    proccalculations.h
+    proccalculations.h \
+    postprocwindow.h
 
 SOURCES += \
     preprocwindow.cpp \
@@ -17,7 +18,8 @@ SOURCES += \
     construction.cpp \
     rod.cpp \
     load.cpp \
-    proccalculations.cpp
+    proccalculations.cpp \
+    postprocwindow.cpp
 
 FORMS +=
 

@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QDebug>
+#include <math.h>
 #include "rod.h"
 #include "load.h"
 class ProcCalculations
@@ -14,6 +15,9 @@ public:
     QVector<QVector<float> > matrixA; //Матрица [А] данной конструкции
     QVector<float> matrixB; // Вектор {В}
     QVector<float> matrixD; //Искомый вектор дельт
+
+    QVector<QVector<float> > matrixU; //Вектор векторов Ux для каждого стержня конструкции
+    QVector<QVector<float> > matrixN; //Вектор векторов Nx для каждого стержня конструкции
 
 private:
     QVector<QVector<float> > inversion(QVector< QVector<float> > A, QVector< QVector<float> > E); //Нахождение обратной матрицы
