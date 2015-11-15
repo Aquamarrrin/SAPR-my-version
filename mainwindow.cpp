@@ -71,6 +71,7 @@ void MainWindow::startMenu()
                             "QPushButton:pressed { background-color: black; color: white;}"
                             "QPushButton:disabled { background-color: white; border-radius:5px;}");
     layoutV->addWidget(btnPostProc);
+    QObject::connect(btnPostProc,SIGNAL(clicked()),this,SLOT(loadPostProc()));
 
     QPushButton* btnBack = new QPushButton(icoLeftArr,"Назад");
     btnBack->setFixedHeight(30);
@@ -82,7 +83,6 @@ void MainWindow::startMenu()
     QObject::connect(btnBack,SIGNAL(clicked()),this,SLOT(backToMainMenu()));
 
     this->setLayout(layoutV);
-    qDebug()<<rods.size();
 
 }
 
@@ -137,11 +137,11 @@ void MainWindow::loadProc()
         ProcCalculations* calc = new ProcCalculations(rods,loads);
         QMessageBox* msg = new QMessageBox();
         msg->setText("Все расчёты успешно произведены! Сохранить?");
-        this->matrixA.clear();
-        this->matrixB.clear();
+        this->matrixU.clear();
+        this->matrixN.clear();
         this->matrixD.clear();
-        this->matrixA=calc->matrixA;
-        this->matrixB=calc->matrixB;
+        this->matrixU=calc->matrixU;
+        this->matrixN=calc->matrixN;
         this->matrixD=calc->matrixD;
         QPushButton* btnSave = msg->addButton("Да",QMessageBox::YesRole);
         connect(btnSave,SIGNAL(clicked()),this,SLOT(saveFile()));
@@ -149,6 +149,17 @@ void MainWindow::loadProc()
         msg->show();
     }
 }
+
+void MainWindow::loadPostProc()
+{
+    if(rods.size()!=0 && matrixD.size()!=0)
+    {
+        PostProcWindow* postPW= new PostProcWindow(rods,matrixU,matrixN);
+        postPW->show();
+    }
+}
+
+
 void MainWindow::showThisMenu()
 {
     this->show();
@@ -178,19 +189,20 @@ void MainWindow::saveFile()
         else
         {
             QTextStream stream(&file);
-            stream<<"Matrix [A]:\n";
-            for (int i=0;i<matrixA.size();i++)
+            stream<<"Matrix [U]:\n";
+            for (int i=0;i<matrixU.size();i++)
             {
-                for (int j=0;j<matrixA[i].size();j++)
-                    stream<<(new QString())->QString::setNum(matrixA[i][j])<<";";
+                for (int j=0;j<matrixU[i].size();j++)
+                    stream<<(new QString())->QString::setNum(matrixU[i][j])<<";";
                             stream<<"\n";
             }
             stream<<"\n";
-            stream<<"Vector {B}:\n";
-            for (int i=0;i<matrixB.size();i++)
+            stream<<"Matrix [N]:\n";
+            for (int i=0;i<matrixN.size();i++)
             {
-                stream<<(new QString())->QString::setNum(matrixB[i])<<";";
-                stream<<"\n";
+                for (int j=0;j<matrixN[i].size();j++)
+                    stream<<(new QString())->QString::setNum(matrixN[i][j])<<";";
+                            stream<<"\n";
             }
             stream<<"\n";
             stream<<"Vector {D}:\n";

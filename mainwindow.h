@@ -11,6 +11,7 @@
 #include "construction.h"
 #include "preprocwindow.h"
 #include "proccalculations.h"
+#include "postprocwindow.h"
 
 class MainWindow : public QWidget
 {
@@ -33,8 +34,8 @@ private:
     QVector<Rod> rods;
     QVector<Load> loads;
 
-    QVector<QVector<float> > matrixA;
-    QVector<float> matrixB;
+    QVector<QVector<float> > matrixU;
+    QVector<QVector<float> > matrixN;
     QVector<float> matrixD;
 
     void clean();
@@ -44,6 +45,7 @@ public slots:
     void startMenu();
     void loadPreProc();
     void loadProc();
+    void loadPostProc();
     void backToMainMenu();
 
 private slots:

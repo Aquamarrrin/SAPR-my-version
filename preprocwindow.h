@@ -52,9 +52,9 @@ public slots:
     void createTableRod(int nNodes); //Создаём таблицу стержней
     void createTableLoad(int nLoads); //Создаём таблицу нагрузок
     void showConstruction(); //Передаём все необходимые параметры в конструкцию и отрисовываем её
-    void backToMenu(); //Возврат в меню выбора процессоров
 
 private slots:
+    void backToMenu(); //Возврат в меню выбора процессоров
     void saveFile(); //Сохранение файла
     void openFile(); //Открытие файла
     void addRod(); //Добавляем стержень по нажатию кнопки

@@ -46,7 +46,7 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
                            "QPushButton:disabled { background-color: white; border-radius:5px;}");
     QObject::connect(btnBack,SIGNAL(clicked()),this,SLOT(backToMenu()));
 
-    QPushButton* btnAddRod = new QPushButton(icoBack,"Добавить");
+    QPushButton* btnAddRod = new QPushButton(icoNext,"Добавить");
     btnAddRod->setFixedHeight(30);
     btnAddRod->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
                            "QPushButton:hover { background-color: black; color: white;}"
@@ -54,7 +54,7 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
                            "QPushButton:disabled { background-color: white; border-radius:5px;}");
     QObject::connect(btnAddRod,SIGNAL(clicked()),this,SLOT(addRod()));
 
-    QPushButton* btnAddLoad = new QPushButton(icoBack,"Добавить");
+    QPushButton* btnAddLoad = new QPushButton(icoNext,"Добавить");
     btnAddLoad->setFixedHeight(30);
     btnAddLoad->setStyleSheet("QPushButton:enabled { background-color: white; border-radius:5px;}"
                            "QPushButton:hover { background-color: black; color: white;}"
@@ -151,7 +151,7 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     //Отрисовка конструкции:
     constr = new Construction();
     constr->setMinimumWidth(500);
-    constr->setFixedHeight(300);
+    constr->setFixedHeight(290);
 
     //Добавляем все элементы на лэйаут
     layoutG->setMenuBar(mnuBar);

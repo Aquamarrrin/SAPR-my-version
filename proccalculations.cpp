@@ -29,8 +29,6 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
         matrixA[rods.size()][rods.size()]=(rods[rods.size()-1].height * rods[rods.size()-1].E)/(rods[rods.size()-1].len);
         matrixA[rods.size()-1][rods.size()]=-(rods[rods.size()-1].height * rods[rods.size()-1].E)/(rods[rods.size()-1].len);
 
-        qDebug()<<matrixA;
-
         QVector<Load> tmpLoads;
         tmpLoads.resize(rods.size()+1);
         for(int i=0;i<tmpLoads.size();i++)
@@ -57,7 +55,6 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
         }
         matrixB[rods.size()]=(rods[rods.size()-1].Fx * rods[rods.size()-1].len)/2 + tmpLoads[rods[rods.size()-1].secondNod-1].F1;
 
-        qDebug()<<matrixB;
 
         matrixD.resize(rods.size()+1);
         for(int i=0;i<tmpLoads.size();i++)
@@ -92,7 +89,6 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
 
 
 
-        qDebug()<<matrixA;
         QVector< QVector<float> > matrixE;
         matrixE.resize(rods.size()+1);
         for(int i=0;i<rods.size()+1;i++)
@@ -108,7 +104,9 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
         matrixE=inversion(matrixA,matrixE);
         matrixD=multi(matrixE,matrixB,matrixD);
 
-        qDebug()<<matrixD;
+        qDebug()<<"Матрица А:"<<matrixA;
+        qDebug()<<"Матрица В:"<<matrixB;
+        qDebug()<<"Матрица дельт:"<<matrixD;
 
         //Заполняем коэффициенты Ux для каждого стержня конструкции
         for(int i=0;i<rods.size();i++)
@@ -134,8 +132,8 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
             matrixN.push_back(vec);
         }
 
-        //qDebug()<<matrixU;
-        //qDebug()<<matrixN;
+        qDebug()<<matrixU;
+        qDebug()<<matrixN;
     }
 }
 
