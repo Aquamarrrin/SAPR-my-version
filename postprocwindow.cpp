@@ -154,9 +154,17 @@ void PostProcWindow::setX()
 
 void PostProcWindow::paintGraph()
 {
-    GraphicWindow* gw = new GraphicWindow(spinType->value(),5,matrixU[spinRod->value()-1]);
-    qDebug()<<"VECUx = "<<matrixU[spinRod->value()-1];
-    gw->show();
+    if(spinType->value()==1){
+        GraphicWindow* gw = new GraphicWindow(1,10,matrixU[spinRod->value()-1]);
+        qDebug()<<"VECUx = "<<matrixU[spinRod->value()-1];
+        gw->show();
+    }
+    else
+        if(spinType->value()==2){
+            GraphicWindow* gw = new GraphicWindow(2,10,matrixN[spinRod->value()-1]);
+            qDebug()<<"VECUx = "<<matrixN[spinRod->value()-1];
+            gw->show();
+        }
 }
 
 void PostProcWindow::backToMenu()

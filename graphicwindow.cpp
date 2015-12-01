@@ -7,41 +7,84 @@ GraphicWindow::GraphicWindow(int type, float maxX, QVector<float> vecF, QWidget 
     layoutG= new QGridLayout();
 
     QGraphicsView *view = new QGraphicsView();
-    QGraphicsScene *scene = new QGraphicsScene(view);
+    QGraphicsScene *scene = new QGraphicsScene(0,0,this->width()-5,this->height()-5,view);
 
     QPen pen(Qt::black);
     QColor gridColor = "#000";
-    scene->addLine(0,view->width()/2,view->width(),view->width()/2,pen);//x
-    scene->addLine(0,0,0,view->width(),pen);//y
+    scene->addLine(0,scene->width()/2,scene->width(),scene->width()/2,pen);//x
+    scene->addLine(0,0,0,scene->width(),pen);//y
 
     gridColor.setAlpha(50);
     pen.setColor(gridColor);
     scene->addText("Ux");//setPos(0, height());
-    for(double k = 20; k <= view->width(); k += 20)
-        scene->addLine(k, 0, k, view->width(),pen);
+    for(double k = 0; k <= scene->width(); k += 20)
+        scene->addLine(k, 0, k, scene->width(),pen);
     //scene->addText("x");
     //->setPos(width(), 0);
-    for(double k = 10; k <= view->width(); k += 10)
-        scene->addLine(0, k, view->width(), k,pen);
+    for(double k = 0; k <= scene->width(); k += 20)
+        scene->addLine(0, k, scene->width(), k,pen);
     gridColor.setAlpha(255);
     pen.setColor(gridColor);
+
+    int countOfCells=scene->width()/20;
+
+    for(double k = 0; k <= scene->width(); k += 40)
+    {
+        QString str;
+        float num=(k/20)*(maxX/countOfCells);
+        num*=100;
+        num=(int)num;
+        num/=100;
+        str.setNum(num);
+        scene->addText(str)->setPos(k-10,scene->width()/2-5);//x
+
+//        num=funcUx(vecF,((k-scene->width()/2)/20)*((maxX/countOfCells)));
+
+        num=((k-scene->width()/2)/20)*(maxX/countOfCells);
+        num*=100;
+        num=(int)num;
+        num/=100;
+        str.setNum(num);
+        scene->addText(str)->setPos(0,scene->width()-k-5);//y
+    }
 
     if(type==1)
     {
         scene->addText("Ux")->setPos(0,0);//setPos(0, height());
-        float kof =(view->width()/funcUx(vecF,view->width()))*100;
-        for(double k = 20; k <= view->width(); k += 20)
+        scene->addText("X")->setPos(scene->width()-10,scene->width()/2);
+        gridColor = "#F00";
+        pen.setColor(gridColor);
+        for(double k = 20; k <= scene->width(); k += 20)
         {
-            QString str;
-            str.setNum((k)/200);
-            scene->addText(str)->setPos(k-10,view->width()/2-5);//setPos(0, height());
-            if((int)k%40==0)
-            {
-                str.setNum(funcUx(vecF,(k-20)/200));
-                scene->addText(str)->setPos(0,view->width()/2-funcUx(vecF,(k-20)/200)*kof-5);//setPos(0, height());
-            }
-            scene->addLine(k-20, view->width()/2-funcUx(vecF,(k-20)/200)*kof, k, view->width()/2-funcUx(vecF,k/200)*kof,pen);
-            qDebug()<<"X1="<<k-20<<"Y1="<<view->width()/2-funcUx(vecF,(k-20)/200)*kof<<"K="<<(k-20)/200<<"FUNC="<<funcUx(vecF,(k-20)/200);
+            float num1=(scene->width()/maxX)*funcUx(vecF,((k-20)/20)*((maxX/countOfCells)));
+            qDebug()<<"NUM1"<<funcUx(vecF,((k-20-scene->width()/2)/20)*((maxX/countOfCells)));
+            float num2=(scene->width()/maxX)*funcUx(vecF,(k/20)*((maxX/countOfCells)));
+            num1=(int)100*num1;
+            num1/=100;
+            num2=(int)100*num2;
+            num2/=100;
+            scene->addLine(k-20, scene->width()/2-num1, k, scene->width()/2-num2,pen);
+            //qDebug()<<"X1="<<k-20<<"Y1="<<scene->width()/2-funcUx(vecF,(k-20)/200)*kof<<"K="<<(k-20)/200<<"FUNC="<<funcUx(vecF,(k-20)/200);
+        }
+    }
+
+    if(type==2)
+    {
+        scene->addText("Nx")->setPos(0,0);//setPos(0, height());
+        scene->addText("X")->setPos(scene->width()-10,scene->width()/2);
+        gridColor = "#F00";
+        pen.setColor(gridColor);
+        for(double k = 20; k <= scene->width(); k += 20)
+        {
+            float num1=(scene->width()/maxX)*funcNx(vecF,((k-20)/20)*((maxX/countOfCells)));
+            qDebug()<<"NUM1"<<funcUx(vecF,((k-20-scene->width()/2)/20)*((maxX/countOfCells)));
+            float num2=(scene->width()/maxX)*funcNx(vecF,(k/20)*((maxX/countOfCells)));
+            num1=(int)100*num1;
+            num1/=100;
+            num2=(int)100*num2;
+            num2/=100;
+            scene->addLine(k-20, scene->width()/2-num1, k, scene->width()/2-num2,pen);
+            //qDebug()<<"X1="<<k-20<<"Y1="<<scene->width()/2-funcUx(vecF,(k-20)/200)*kof<<"K="<<(k-20)/200<<"FUNC="<<funcUx(vecF,(k-20)/200);
         }
     }
 
