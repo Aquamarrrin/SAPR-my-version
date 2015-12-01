@@ -9,7 +9,8 @@ HEADERS += \
     rod.h \
     load.h \
     proccalculations.h \
-    postprocwindow.h
+    postprocwindow.h \
+    graphicwindow.h
 
 SOURCES += \
     preprocwindow.cpp \
@@ -19,7 +20,8 @@ SOURCES += \
     rod.cpp \
     load.cpp \
     proccalculations.cpp \
-    postprocwindow.cpp
+    postprocwindow.cpp \
+    graphicwindow.cpp
 
 FORMS +=
 

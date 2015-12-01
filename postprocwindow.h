@@ -6,6 +6,11 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QPushButton>
+#include <QLabel>
+#include <QLineEdit>
+#include <QSpinBox>
+#include <QPushButton>
+#include "graphicwindow.h"
 #include "mainwindow.h"
 #include "rod.h"
 
@@ -22,16 +27,26 @@ private:
 
     QGridLayout* layoutG;
 
-    QTableWidget* tableOfAllCalcs;
+    QLineEdit* lineEditX;
+    QSpinBox* spinRod;
+    QSpinBox* spinType;
+
+    QVector<QTableWidget*> tablesOfAllCalcs;
 
     float funcUx(QVector<float> vecU, float x);
     float funcNx(QVector<float> vecN, float x);
 
-    void fillTable();
+    void fillTable(QTableWidget* tableOfAllCalcs, int matInd);
+
+    float X;
+    int indexOFButton;
 signals:
+
 
 private slots:
     void backToMenu();
+    void setX();
+    void paintGraph();
 
 };
 
