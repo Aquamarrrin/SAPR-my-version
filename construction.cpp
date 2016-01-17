@@ -276,6 +276,7 @@ void Construction::changeMapRods(int numOfRod, QVector<float> set)
     rod.height=set[0];
     rod.E=set[2];
     rod.Fx=set[3];
+    rod.sigma=set[4];
     rods.push_back(rod);
     //update();
 }

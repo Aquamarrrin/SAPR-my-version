@@ -155,6 +155,7 @@ void MainWindow::loadPostProc()
     if(rods.size()!=0 && matrixD.size()!=0)
     {
         PostProcWindow* postPW= new PostProcWindow(rods,matrixU,matrixN);
+        postPW->setMinimumSize(800,700);
         postPW->show();
     }
 }

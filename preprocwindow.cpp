@@ -116,7 +116,7 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     tableRodSettings = new QTableWidget(this);
     tableRodSettings->setMinimumWidth(350);
     tableRodSettings->setMinimumHeight(200);
-    tableRodSettings->setColumnCount(4);
+    tableRodSettings->setColumnCount(5);
     tableRodSettings->setRowCount(1);
     QTableWidgetItem* itemParamHor1 = new QTableWidgetItem("A стержня");
     tableRodSettings->setHorizontalHeaderItem(0,itemParamHor1);
@@ -126,6 +126,8 @@ PreProcWindow::PreProcWindow(QString filePath , QWidget *parent) :
     tableRodSettings->setHorizontalHeaderItem(2,itemParamHor3);
     QTableWidgetItem* itemParamHor4 = new QTableWidgetItem("Fx распр");
     tableRodSettings->setHorizontalHeaderItem(3,itemParamHor4);
+    QTableWidgetItem* itemParamHor5 = new QTableWidgetItem("σ допустимое");
+    tableRodSettings->setHorizontalHeaderItem(4,itemParamHor5);
     (tableRodSettings->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
     (tableRodSettings->horizontalHeader())->setMinimumSectionSize(50);
 
@@ -242,7 +244,7 @@ void PreProcWindow::showConstruction()
             bool ok=false;
             for(int i=0;i<tableRodSettings->columnCount();i++)
             {
-                if((isNumber(tableRodSettings->item(row,i)->text())) && (i==tableRodSettings->columnCount()-1 || tableRodSettings->item(row,i)->text().toFloat()>0))
+                if((isNumber(tableRodSettings->item(row,i)->text())) && (i==tableRodSettings->columnCount()-1 || i==tableRodSettings->columnCount()-2 || tableRodSettings->item(row,i)->text().toFloat()>0))
                 {
                     vec.push_back(tableRodSettings->item(row,i)->text().toFloat());
                     ok=true;
@@ -550,6 +552,8 @@ void PreProcWindow::parseFileOfTablesText()
     tableRodSettings->setHorizontalHeaderItem(2,itemParamHor3);
     QTableWidgetItem* itemParamHor4 = new QTableWidgetItem("Fx распр");
     tableRodSettings->setHorizontalHeaderItem(3,itemParamHor4);
+    QTableWidgetItem* itemParamHor5 = new QTableWidgetItem("σ допустимое");
+    tableRodSettings->setHorizontalHeaderItem(4,itemParamHor5);
     (tableRodSettings->horizontalHeader())->setSectionResizeMode(QHeaderView::Stretch);
     (tableRodSettings->horizontalHeader())->setMinimumSectionSize(50);
 

@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QGridLayout>
 #include <QGraphicsTextItem>
+#include <math.h>
 
 class GraphicWindow : public QWidget
 {

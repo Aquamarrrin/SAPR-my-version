@@ -10,6 +10,7 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QPushButton>
+#include <QMessageBox>
 #include "graphicwindow.h"
 #include "mainwindow.h"
 #include "rod.h"
@@ -29,7 +30,9 @@ private:
 
     QLineEdit* lineEditX;
     QSpinBox* spinRod;
+    QSpinBox* spinRodForCalcs;
     QSpinBox* spinType;
+    QSpinBox* spinMaxX;
 
     QVector<QTableWidget*> tablesOfAllCalcs;
 
@@ -38,7 +41,6 @@ private:
 
     void fillTable(QTableWidget* tableOfAllCalcs, int matInd);
 
-    float X;
     int indexOFButton;
 signals:
 
@@ -46,7 +48,9 @@ signals:
 private slots:
     void backToMenu();
     void setX();
+    void delX();
     void paintGraph();
+    void calcParams();
 
 };
 

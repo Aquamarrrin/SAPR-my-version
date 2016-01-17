@@ -15,6 +15,7 @@ public:
     float Fx;
     float E;
     float coord;
+    float sigma;
 };
 
 #endif // ROD_H

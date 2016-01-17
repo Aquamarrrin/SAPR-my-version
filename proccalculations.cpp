@@ -104,9 +104,9 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
         matrixE=inversion(matrixA,matrixE);
         matrixD=multi(matrixE,matrixB,matrixD);
 
-        qDebug()<<"Матрица А:"<<matrixA;
-        qDebug()<<"Матрица В:"<<matrixB;
-        qDebug()<<"Матрица дельт:"<<matrixD;
+//        qDebug()<<"Матрица А:"<<matrixA;
+//        qDebug()<<"Матрица В:"<<matrixB;
+//        qDebug()<<"Матрица дельт:"<<matrixD;
 
         //Заполняем коэффициенты Ux для каждого стержня конструкции
         for(int i=0;i<rods.size();i++)
@@ -132,8 +132,8 @@ ProcCalculations::ProcCalculations(QVector<Rod> rods,QVector<Load> loads)
             matrixN.push_back(vec);
         }
 
-        qDebug()<<matrixU;
-        qDebug()<<matrixN;
+//        qDebug()<<matrixU;
+//        qDebug()<<matrixN;
     }
 }
 
@@ -187,10 +187,10 @@ QVector<float> ProcCalculations::multi(QVector<QVector<float> > A, QVector<float
         for (int j = 0; j < A.size(); j++)
         {
             D[i] += A[i][j] * B[j];
-        }
+        }/*
         D[i]*=10000;
         D[i]=round(D[i]);
-        D[i]/=10000;/*
+        D[i]/=10000;
         qDebug()<<D[i];
         qDebug()<<" ------ ";*/
     }
